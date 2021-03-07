@@ -13,5 +13,51 @@ class Element(enum.Enum):
     PlayerInGoal = "\U0001F929"
     Space = "  "
 
+# General traversal algorithm
+class TraverseAlgorithm(object):
+    moveFunctionList = [obj.Point.movePointDown, obj.Point.movePointRight, 
+        obj.Point.movePointUp, obj.Point.movePointLeft]
+
+    def __init__(self, staticMap):
+        self.staticMap = staticMap
+        self.oldNodes = {}
+    
+    def wallInPoint(self, point):
+        return point in self.staticMap and self.staticMap[point] == Element.Wall
+
+    # Returns list of nodes obtained by expanding a node
+    def expandNode(self, node):
+        newNodes = []
+        # Try each possible move
+        for move in self.moveFunctionList:
+            newPos = move(node.playerPoint)
+            # Check for illegal moves
+            # If there is a wall in newPos
+            if (self.wallInPoint(newPos)):
+                continue
+
+            # If there is a box in newPos, check if it can be moved
+            boxNextPos = None
+            if (newPos in node.boxes):
+                boxNextPos = move(newPos)
+                if (self.wallInPoint(boxNextPos) or boxNextPos in node.boxes):
+                    continue
+            
+            # If move has already been done
+            # TODO: Check repeated nodes
+            if (newPos in self.oldNodes):
+                continue
+            
+            newNodeBoxes = list(node.boxes.keys())
+            if (boxNextPos is not None):
+                newNodeBoxes.remove(newPos)
+                newNodeBoxes.append(boxNextPos)
+
+            newNodes.append(obj.Node(newPos, node.depth + 1, newNodeBoxes, node))
+        
+        return newNodes
+
+
+# class BFS(TraverseAlgorithm):
     
 
