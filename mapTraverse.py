@@ -10,6 +10,7 @@ class Element(enum.Enum):
     Goal = "\U0001F3C1"
     Wall = "\U0001F5FB"
     Player = "\U0001F920"
+    PlayerInGoal = "\U0001F929"
     Space = "  "
 
     
