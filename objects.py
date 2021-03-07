@@ -47,25 +47,25 @@ class Point(object):
     def movePointLeft(point):
         if (point.x <= 0):
             raise ValueError("X cannot be negative!")
-        return self.__class__(point.x - 1, point.y)
+        return Point(point.x - 1, point.y)
     
     @staticmethod
     def movePointRight(point, maxX=float("inf")):
         if (point.x >= maxX):
             raise ValueError("X cannot be higher than maxX!")
-        return self.__class__(point.x + 1, point.y)
+        return Point(point.x + 1, point.y)
     
     @staticmethod
     def movePointUp(point):
         if (point.y <= 0):
             raise ValueError("Y cannot be negative!")
-        return self.__class__(point.x, point.y - 1)
+        return Point(point.x, point.y - 1)
 
     @staticmethod
     def movePointDown(point, maxY=float("inf")):
         if (point.y >= maxY):
             raise ValueError("Y cannot be higher than maxY!")
-        return self.__class__(point.x, point.y + 1)
+        return Point(point.x, point.y + 1)
 
     # Define hash and eq methods to allow key usage
     def __hash__(self):
