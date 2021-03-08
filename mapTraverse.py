@@ -18,12 +18,20 @@ class TraverseAlgorithm(object):
     moveFunctionList = [obj.Point.movePointDown, obj.Point.movePointRight, 
         obj.Point.movePointUp, obj.Point.movePointLeft]
 
-    def __init__(self, staticMap):
+    def __init__(self, staticMap, initNode):
         self.staticMap = staticMap
+        self.nodeCollection = [initNode]
+        self.expandedCount = 0
         self.oldNodes = {}
     
+    def isAlgorithmOver(self):
+        return not self.nodeCollection
+
     def wallInPoint(self, point):
         return point in self.staticMap and self.staticMap[point] == Element.Wall
+
+    def iterate(self):
+        pass
 
     # Returns list of nodes obtained by expanding a node
     def expandNode(self, node):
@@ -57,7 +65,18 @@ class TraverseAlgorithm(object):
         
         return newNodes
 
+class BFS(TraverseAlgorithm):
+    
+    def __init__(self, staticMap, initNode):
+        super().__init__(staticMap, initNode)
+    
+    # Iteration is based on a Queue collection
+    def iterate(self):
+        curNode = self.nodeCollection.pop(0)
+        # TODO
+       
+    
+    
 
-# class BFS(TraverseAlgorithm):
     
 

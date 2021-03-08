@@ -21,5 +21,6 @@ print(initNode)
 for el in (mapFun.Element):
     print(el.name + ' ' + el.value)
 
-algo = mapFun.TraverseAlgorithm(staticMap)
-print(algo.expandNode(initNode))
+algo = mapFun.BFS(staticMap, initNode)
+while (not algo.isAlgorithmOver()):
+    
