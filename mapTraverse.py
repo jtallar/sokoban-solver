@@ -22,10 +22,25 @@ class TraverseAlgorithm(object):
         self.staticMap = staticMap
         self.nodeCollection = [initNode]
         self.expandedCount = 0
+        self.winnerNode = None
         self.oldNodes = {}
     
     def isAlgorithmOver(self):
-        return not self.nodeCollection
+        return self.winnerNode or not self.nodeCollection
+
+    def getBorderCount(self):
+        return len(self.nodeCollection)
+
+    def checkWinnerNode(self, node):
+        if (self.winnerNode):
+            return True
+
+        # We assume that # Objectives == # Boxes
+        for point in node.boxes:
+            if (point not in self.staticMap or self.staticMap[point] != Element.Goal):
+                return False
+        self.winnerNode = node    
+        return True
 
     def wallInPoint(self, point):
         return point in self.staticMap and self.staticMap[point] == Element.Wall
@@ -56,6 +71,7 @@ class TraverseAlgorithm(object):
             if (newPos in self.oldNodes):
                 continue
             
+            self.expandedCount += 1
             newNodeBoxes = list(node.boxes.keys())
             if (boxNextPos is not None):
                 newNodeBoxes.remove(newPos)
@@ -64,6 +80,17 @@ class TraverseAlgorithm(object):
             newNodes.append(obj.Node(newPos, node.depth + 1, newNodeBoxes, node))
         
         return newNodes
+    
+    def getWinningRoadStack(self):
+        road = []
+        curNode = self.winnerNode
+        while (curNode):
+            road.append(curNode)
+            curNode = curNode.prevNode
+
+        return road
+        
+        
 
 class BFS(TraverseAlgorithm):
     
@@ -71,9 +98,24 @@ class BFS(TraverseAlgorithm):
         super().__init__(staticMap, initNode)
     
     # Iteration is based on a Queue collection
+    # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
     def iterate(self):
+        """Do one iteration of BFS
+
+        Returns extracted node
+        """
+
+        if (super().isAlgorithmOver()):
+            return self.winnerNode
+
         curNode = self.nodeCollection.pop(0)
-        # TODO
+        if (not super().checkWinnerNode(curNode)):
+            self.nodeCollection.extend(super().expandNode(curNode))
+
+        return curNode
+
+        
+
        
     
     
