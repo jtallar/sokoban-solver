@@ -30,11 +30,9 @@ print(f'Took {end_time - startTime} to read Config and Map')
 startTime = end_time
 
 algo = mapFun.BFS(staticMap, initNode)
-i = 0
-while (not algo.isAlgorithmOver() and i <= 8):
+while (not algo.isAlgorithmOver()):
     curNode = algo.iterate()
-    print(curNode)
-    i += 1
+    # print(f'{algo.nodeCollection}\n')
 
 end_time = time.time()
 print(f'Took {end_time - startTime} to run algorithm')
