@@ -1,27 +1,39 @@
 import objects as obj
 import mapTraverse as mapFun
 import time
+import json
 
 startTime = time.time()
-# TODO: Read configurations from file
-# TODO: Read map from file
-# playerInit = obj.Point(10, 10)
-# boxesInit = [obj.Point(10, 9), obj.Point(11, 10)]
-# goalsInit = [obj.Point(7, 7), obj.Point(7, 6)]
-# wallInit = [obj.Point(10, 11), obj.Point(10, 8)]
 
-playerInit = obj.Point(2, 2)
-boxesInit = [obj.Point(3, 2)]
-goalsInit = [obj.Point(5, 2)]
-wallInit = [obj.Point(1, 1), obj.Point(2, 1), obj.Point(3, 1), obj.Point(4, 1), obj.Point(5, 1), obj.Point(6, 1),
-    obj.Point(1, 4), obj.Point(2, 4), obj.Point(3, 4), obj.Point(4, 4), obj.Point(5, 4), obj.Point(6, 4),
-    obj.Point(1, 2), obj.Point(6, 2), obj.Point(1, 3), obj.Point(6, 3)]
+# Read configurations from file
+with open("config.json") as file:
+    data = json.load(file)
+algorithm = data["algorithm"]
+depth = data["depth"]
+# TODO: use parameters
 
+# Read map from file
+boxesInit = []
 staticMap = {}
-for point in goalsInit:
-    staticMap[point] = mapFun.Element.Goal
-for point in wallInit:
-    staticMap[point] = mapFun.Element.Wall
+file = open("level.txt", "r")
+y = 0
+for line in file:
+    x = 0
+    for character in line:
+        if character == '\n': continue
+        x+=1
+        if character == '#':
+            staticMap[obj.Point(x,y)] = mapFun.Element.Wall
+        elif character == '.':
+            staticMap[obj.Point(x,y)] = mapFun.Element.Goal
+        elif character == '$':
+            boxesInit.append(obj.Point(x,y))
+        elif (character == '@'):
+            playerInit = obj.Point(x,y)
+        elif (character == ' '): continue   # TODO: check si hace falta hacer algo o
+        elif (character == '*'): continue   #       no deberia pasar en el inicial
+        elif (character == '+'): continue
+    y+=1
 
 initNode = obj.Node(playerInit, 0, boxesInit)
 
