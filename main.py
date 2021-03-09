@@ -10,12 +10,13 @@ with open("config.json") as file:
     data = json.load(file)
 algorithm = data["algorithm"]
 depth = data["depth"]
+level = 'level_' + data["level"] + '.txt'
 # TODO: use parameters
 
 # Read map from file
 boxesInit = []
 staticMap = {}
-file = open("level.txt", "r")
+file = open(level, "r")
 y = 0
 for line in file:
     x = 0
@@ -30,9 +31,13 @@ for line in file:
             boxesInit.append(obj.Point(x,y))
         elif (character == '@'):
             playerInit = obj.Point(x,y)
-        elif (character == ' '): continue   # TODO: check si hace falta hacer algo o
-        elif (character == '*'): continue   #       no deberia pasar en el inicial
-        elif (character == '+'): continue
+        elif (character == '*'): 
+            staticMap[obj.Point(x,y)] = mapFun.Element.Goal
+            boxesInit.append(obj.Point(x,y))
+        elif (character == '+'): 
+            staticMap[obj.Point(x,y)] = mapFun.Element.Goal
+            playerInit = obj.Point(x,y)
+        elif (character == ' '): continue
     y+=1
 
 initNode = obj.Node(playerInit, 0, boxesInit)

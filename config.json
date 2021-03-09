@@ -1,4 +1,5 @@
 {
+	"level": "medium",
 	"algorithm": "DFS",
 	"depth": 8
 }
