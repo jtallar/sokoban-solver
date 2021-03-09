@@ -40,6 +40,8 @@ for line in file:
         elif (character == ' '): continue
     y+=1
 
+# TODO: Metemos alguna validacion de mapa simple?
+#       Que no haya 2 playerInit, que haya # boxes <= # goals
 initNode = obj.Node(playerInit, 0, boxesInit)
 
 end_time = time.time()
