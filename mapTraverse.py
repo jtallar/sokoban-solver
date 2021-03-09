@@ -24,6 +24,9 @@ class TraverseAlgorithm(object):
         self.expandedCount = 0
         self.winnerNode = None
         self.oldNodes = {}
+        self.oldNodeCount = 0
+        # Add initial node to old nodes. Node is old when seen, not when expanded!
+        self.markNodeAsOld(initNode)
     
     def isAlgorithmOver(self):
         return self.winnerNode or not self.nodeCollection
@@ -48,6 +51,39 @@ class TraverseAlgorithm(object):
     def iterate(self):
         pass
 
+    def markNodeAsOld(self, node):
+        if (node.playerPoint not in self.oldNodes):
+            self.oldNodes[node.playerPoint] = {}
+        
+        for box in node.boxes:
+            if (box not in self.oldNodes[node.playerPoint]):
+                self.oldNodes[node.playerPoint][box] = {}
+            self.oldNodes[node.playerPoint][box][self.oldNodeCount] = True
+        
+        self.oldNodeCount += 1
+
+    def isNodeOld(self, node):
+        if (node.playerPoint not in self.oldNodes):
+            return False
+        
+        (first, ids) = (True, [])
+        for box in node.boxes:
+            if (box not in self.oldNodes[node.playerPoint]):
+                return False
+            if (first):
+                first = False
+                ids = self.oldNodes[node.playerPoint][box].keys()
+            else:
+                newIds = []
+                for id in ids:
+                    if (id in self.oldNodes[node.playerPoint][box]):
+                        newIds.append(id)
+                ids = newIds
+                if (not ids):
+                    return False
+        
+        return not not ids
+
     # Returns list of nodes obtained by expanding a node
     def expandNode(self, node):
         newNodes = []
@@ -66,18 +102,22 @@ class TraverseAlgorithm(object):
                 if (self.wallInPoint(boxNextPos) or boxNextPos in node.boxes):
                     continue
             
-            # If move has already been done
-            # TODO: Check repeated nodes
-            if (newPos in self.oldNodes):
-                continue
-            
-            self.expandedCount += 1
             newNodeBoxes = list(node.boxes.keys())
-            if (boxNextPos is not None):
+            if (boxNextPos): # eq to (boxNextPos is not None)
                 newNodeBoxes.remove(newPos)
                 newNodeBoxes.append(boxNextPos)
 
-            newNodes.append(obj.Node(newPos, node.depth + 1, newNodeBoxes, node))
+            newNode = obj.Node(newPos, node.depth + 1, newNodeBoxes, node)
+
+            # If move has already been done, skip.
+            if (self.isNodeOld(newNode)):
+                continue
+            # If not, add it as old
+            self.markNodeAsOld(newNode)
+
+            # TODO: Corregir esta cuenta, creo que deberia ir afuera.
+            self.expandedCount += 1
+            newNodes.append(newNode)
         
         return newNodes
     
