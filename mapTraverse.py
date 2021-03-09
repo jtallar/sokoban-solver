@@ -86,6 +86,9 @@ class TraverseAlgorithm(object):
 
     # Returns list of nodes obtained by expanding a node
     def expandNode(self, node):
+        # TODO: Check que esta cuenta va aca. Deberia solo sumar si hay hijos?
+        self.expandedCount += 1
+
         newNodes = []
         # Try each possible move
         for move in self.moveFunctionList:
@@ -115,8 +118,6 @@ class TraverseAlgorithm(object):
             # If not, add it as old
             self.markNodeAsOld(newNode)
 
-            # TODO: Corregir esta cuenta, creo que deberia ir afuera.
-            self.expandedCount += 1
             newNodes.append(newNode)
         
         return newNodes
