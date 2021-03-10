@@ -6,12 +6,12 @@ import objects as obj
 # Eg:   for el in (Element):
 #           print(el.name + ' ' + el.value)
 class Element(enum.Enum):
-    Box = "\U0001F5C2"
-    BoxInGoal = "\U0001F5C3"
+    Box = "\U0001F5C2 "
+    BoxInGoal = "\U0001F5C3 "
     Goal = "\U0001F3C1"
-    Wall = "\U0001F5FB"
+    Wall = "\U0001F9F1"
     Player = "\U0001F920"
-    PlayerInGoal = "\U0001F929"
+    PlayerInGoal = "\U0001F9D0"    # TODO: check emoji
     Space = "  "
 
 
