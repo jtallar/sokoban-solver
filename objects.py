@@ -96,9 +96,9 @@ class Node(object):
             Node object of parent node in tree
         """
 
-        self.playerPoint = player_point
+        self.player_point = player_point
         self.depth = depth
-        self.prevNode = prev_node
+        self.prev_node = prev_node
         self.boxes = {}
         for point in box_points_list:
             self.boxes[point] = True
@@ -107,4 +107,4 @@ class Node(object):
         return self.__repr__()
 
     def __repr__(self):
-        return "Node(player=%s,depth=%s,boxes=%s)" % (self.playerPoint, self.depth, self.boxes)
+        return "Node(player=%s,depth=%s,boxes=%s)" % (self.player_point, self.depth, self.boxes)

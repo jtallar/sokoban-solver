@@ -1,6 +1,7 @@
 import enum
 import objects as obj
 
+
 # Possible elements in space
 # Eg:   for el in (Element):
 #           print(el.name + ' ' + el.value)
@@ -13,131 +14,131 @@ class Element(enum.Enum):
     PlayerInGoal = "\U0001F929"
     Space = "  "
 
+
 # General traversal algorithm
 class TraverseAlgorithm(object):
     moveFunctionList = [obj.Point.move_point_down, obj.Point.move_point_right,
                         obj.Point.move_point_up, obj.Point.move_point_left]
 
-    def __init__(self, staticMap, initNode):
-        self.staticMap = staticMap
-        self.nodeCollection = [initNode]
-        self.expandedCount = 0
-        self.winnerNode = None
-        self.oldNodes = {}
-        self.oldNodeCount = 0
+    def __init__(self, static_map, init_node):
+        self.static_map = static_map
+        self.node_collection = [init_node]
+        self.expanded_count = 0
+        self.winner_node = None
+        self.old_nodes = {}
+        self.old_node_count = 0
         # Add initial node to old nodes. Node is old when seen, not when expanded!
-        self.markNodeAsOld(initNode)
-    
-    def isAlgorithmOver(self):
-        return self.winnerNode or not self.nodeCollection
+        self.mark_node_as_old(init_node)
 
-    def getBorderCount(self):
-        return len(self.nodeCollection)
+    def is_algorithm_over(self):
+        return self.winner_node or not self.node_collection
 
-    def checkWinnerNode(self, node):
-        if (self.winnerNode):
+    def get_border_count(self):
+        return len(self.node_collection)
+
+    def check_winner_node(self, node):
+        if self.winner_node:
             return True
 
         # We assume that # Objectives == # Boxes
         for point in node.boxes:
-            if (point not in self.staticMap or self.staticMap[point] != Element.Goal):
+            if point not in self.static_map or self.static_map[point] != Element.Goal:
                 return False
-        self.winnerNode = node    
+        self.winner_node = node
         return True
 
-    def wallInPoint(self, point):
-        return point in self.staticMap and self.staticMap[point] == Element.Wall
+    def wall_in_point(self, point):
+        return point in self.static_map and self.static_map[point] == Element.Wall
 
     def iterate(self):
         pass
 
-    def markNodeAsOld(self, node):
-        if (node.playerPoint not in self.oldNodes):
-            self.oldNodes[node.playerPoint] = {}
-        
-        for box in node.boxes:
-            if (box not in self.oldNodes[node.playerPoint]):
-                self.oldNodes[node.playerPoint][box] = {}
-            self.oldNodes[node.playerPoint][box][self.oldNodeCount] = True
-        
-        self.oldNodeCount += 1
+    def mark_node_as_old(self, node):
+        if node.player_point not in self.old_nodes:
+            self.old_nodes[node.player_point] = {}
 
-    def isNodeOld(self, node):
-        if (node.playerPoint not in self.oldNodes):
+        for box in node.boxes:
+            if box not in self.old_nodes[node.player_point]:
+                self.old_nodes[node.player_point][box] = {}
+            self.old_nodes[node.player_point][box][self.old_node_count] = True
+
+        self.old_node_count += 1
+
+    def is_node_old(self, node):
+        if node.player_point not in self.old_nodes:
             return False
-        
+
         (first, ids) = (True, [])
         for box in node.boxes:
-            if (box not in self.oldNodes[node.playerPoint]):
+            if box not in self.old_nodes[node.player_point]:
                 return False
-            if (first):
+            if first:
                 first = False
-                ids = self.oldNodes[node.playerPoint][box].keys()
+                ids = self.old_nodes[node.player_point][box].keys()
             else:
-                newIds = []
-                for id in ids:
-                    if (id in self.oldNodes[node.playerPoint][box]):
-                        newIds.append(id)
-                ids = newIds
-                if (not ids):
+                new_ids = []
+                for _id in ids:
+                    if _id in self.old_nodes[node.player_point][box]:
+                        new_ids.append(_id)
+                ids = new_ids
+                if not ids:
                     return False
-        
+
         return not not ids
 
     # Returns list of nodes obtained by expanding a node
-    def expandNode(self, node):
-        # TODO: Check que esta cuenta va aca. Deberia solo sumar si hay hijos?
-        self.expandedCount += 1
+    def expand_node(self, node):
+        # TODO: Check if this count goes here. Should only add when it has children?
+        self.expanded_count += 1
 
-        newNodes = []
+        new_nodes = []
         # Try each possible move
         for move in self.moveFunctionList:
-            newPos = move(node.playerPoint)
+            new_pos = move(node.player_point)
             # Check for illegal moves
-            # If there is a wall in newPos
-            if (self.wallInPoint(newPos)):
+            # If there is a wall in new_pos
+            if self.wall_in_point(new_pos):
                 continue
 
-            # If there is a box in newPos, check if it can be moved
-            boxNextPos = None
-            if (newPos in node.boxes):
-                boxNextPos = move(newPos)
-                if (self.wallInPoint(boxNextPos) or boxNextPos in node.boxes):
+            # If there is a box in new_pos, check if it can be moved
+            box_next_pos = None
+            if new_pos in node.boxes:
+                box_next_pos = move(new_pos)
+                if self.wall_in_point(box_next_pos) or box_next_pos in node.boxes:
                     continue
-            
-            newNodeBoxes = list(node.boxes.keys())
-            if (boxNextPos): # eq to (boxNextPos is not None)
-                newNodeBoxes.remove(newPos)
-                newNodeBoxes.append(boxNextPos)
 
-            newNode = obj.Node(newPos, node.depth + 1, newNodeBoxes, node)
+            new_node_boxes = list(node.boxes.keys())
+            if box_next_pos:  # eq to (box_next_pos is not None)
+                new_node_boxes.remove(new_pos)
+                new_node_boxes.append(box_next_pos)
+
+            new_node = obj.Node(new_pos, node.depth + 1, new_node_boxes, node)
 
             # If move has already been done, skip.
-            if (self.isNodeOld(newNode)):
+            if self.is_node_old(new_node):
                 continue
             # If not, add it as old
-            self.markNodeAsOld(newNode)
+            self.mark_node_as_old(new_node)
 
-            newNodes.append(newNode)
-        
-        return newNodes
-    
-    def getWinningRoadStack(self):
+            new_nodes.append(new_node)
+
+        return new_nodes
+
+    def get_winning_road_stack(self):
         road = []
-        curNode = self.winnerNode
-        while (curNode):
-            road.append(curNode)
-            curNode = curNode.prevNode
+        cur_node = self.winner_node
+        while cur_node:
+            road.append(cur_node)
+            cur_node = cur_node.prev_node
 
         return road
-        
-        
+
 
 class BFS(TraverseAlgorithm):
-    
-    def __init__(self, staticMap, initNode):
-        super().__init__(staticMap, initNode)
-    
+
+    def __init__(self, static_map, init_node):
+        super().__init__(static_map, init_node)
+
     # Iteration is based on a Queue collection
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
     def iterate(self):
@@ -146,20 +147,11 @@ class BFS(TraverseAlgorithm):
         Returns extracted node
         """
 
-        if (super().isAlgorithmOver()):
-            return self.winnerNode
+        if super().is_algorithm_over():
+            return self.winner_node
 
-        curNode = self.nodeCollection.pop(0)
-        if (not super().checkWinnerNode(curNode)):
-            self.nodeCollection.extend(super().expandNode(curNode))
+        cur_node = self.node_collection.pop(0)
+        if not super().check_winner_node(cur_node):
+            self.node_collection.extend(super().expand_node(cur_node))
 
-        return curNode
-
-        
-
-       
-    
-    
-
-    
-
+        return cur_node

@@ -3,7 +3,7 @@ import mapTraverse as mapFun
 import time
 import json
 
-startTime = time.time()
+start_time = time.time()
 
 # Read configurations from file
 with open("config.json") as file:
@@ -14,8 +14,8 @@ level = 'level_' + data["level"] + '.txt'
 # TODO: use parameters
 
 # Read map from file
-boxesInit = []
-staticMap = {}
+boxes_init = []
+static_map = {}
 file = open(level, "r")
 y = 0
 for line in file:
@@ -25,52 +25,53 @@ for line in file:
             continue
         x += 1
         if character == '#':
-            staticMap[obj.Point(x, y)] = mapFun.Element.Wall
+            static_map[obj.Point(x, y)] = mapFun.Element.Wall
         elif character == '.':
-            staticMap[obj.Point(x, y)] = mapFun.Element.Goal
+            static_map[obj.Point(x, y)] = mapFun.Element.Goal
         elif character == '$':
-            boxesInit.append(obj.Point(x, y))
+            boxes_init.append(obj.Point(x, y))
         elif character == '@':
-            playerInit = obj.Point(x, y)
+            player_init = obj.Point(x, y)
         elif character == '*':
-            staticMap[obj.Point(x, y)] = mapFun.Element.Goal
-            boxesInit.append(obj.Point(x, y))
+            static_map[obj.Point(x, y)] = mapFun.Element.Goal
+            boxes_init.append(obj.Point(x, y))
         elif character == '+':
-            staticMap[obj.Point(x, y)] = mapFun.Element.Goal
-            playerInit = obj.Point(x, y)
+            static_map[obj.Point(x, y)] = mapFun.Element.Goal
+            player_init = obj.Point(x, y)
         elif character == ' ':
             continue
     y += 1
 
 # TODO: Create simple map validation?
-#       No 2 playerInit, # boxes <= # goals
-initNode = obj.Node(playerInit, 0, boxesInit)
+#       No 2 player_init, # boxes <= # goals
+init_node = obj.Node(player_init, 0, boxes_init)
 
 end_time = time.time()
-print(f'Took {end_time - startTime} to read Config and Map')
-startTime = end_time
+print(f'Took {end_time - start_time} to read Config and Map')
+start_time = end_time
 
-algo = mapFun.BFS(staticMap, initNode)
-while not algo.isAlgorithmOver():
-    curNode = algo.iterate()
+algo = mapFun.BFS(static_map, init_node)
+while not algo.is_algorithm_over():
+    curr_node = algo.iterate()
     # print(f'{algo.nodeCollection}\n')
 
 end_time = time.time()
-print(f'Took {end_time - startTime} to run algorithm')
+print(f'Took {end_time - start_time} to run algorithm')
 
 # TODO: Print search params
 
 # TODO: Move printing to function/other place, add return in failure instead of if/else
-if not algo.winnerNode:
+if not algo.winner_node:
     # Solution not found
     print("Failure!")
 else:
     # Solution found
     print("Success!")
-    print(
-        f'Depth: {algo.winnerNode.depth}; Expanded nodes: {algo.expandedCount}; Border nodes: {algo.getBorderCount()}')
-    roadStack = algo.getWinningRoadStack()
+    print(f'Depth: {algo.winner_node.depth}; '
+          f'Expanded nodes: {algo.expanded_count}; '
+          f'Border nodes: {algo.get_border_count()}')
+    road_stack = algo.get_winning_road_stack()
 
     # TODO: Print map instead of nodes
-    while roadStack:
-        print(f'{roadStack.pop()}\n')
+    while road_stack:
+        print(f'{road_stack.pop()}\n')
