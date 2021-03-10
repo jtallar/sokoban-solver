@@ -53,7 +53,7 @@ start_time = end_time
 algo = mapFun.BFS(static_map, init_node)
 while not algo.is_algorithm_over():
     curr_node = algo.iterate()
-    # print(f'{algo.nodeCollection}\n')
+    # print(f'{algo.node_collection}\n')
 
 end_time = time.time()
 print(f'Took {end_time - start_time} to run algorithm')

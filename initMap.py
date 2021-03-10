@@ -1,5 +1,5 @@
 import objects as obj
-import mapTraverse as mapFun
+# import mapTraverse as mapFun
 import json
 
 # Read configurations from file
@@ -17,7 +17,8 @@ y = 0
 for line in file:
     x = 0
     for character in line:
-        if character == '\n': continue
+        if character == '\n':
+            continue
         x += 1
         if character == '#':
             wallInit.append(obj.Point(x, y))
