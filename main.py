@@ -24,7 +24,7 @@ if algorithm_name == 'IDDFS':
         print("Invalid IDDFS step!")
         sys.exit(1)
 level = 'level_' + data["level"] + '.txt'
-# TODO: use parameters
+# TODO: should we use max_depth?
 
 # Read map from file
 boxes_init = []
