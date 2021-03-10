@@ -2,6 +2,28 @@ import objects as obj
 import mapTraverse as mapFun
 import json
 
+def printMap(node, maxX, maxY, static_map):
+    line = ''
+    for iy in range(maxY):
+        for ix in range(maxX):
+            if(obj.Point(ix, iy) in static_map):                # el punto es Wall o Goal
+                if(obj.Point(ix, iy) in node.boxes):            # y tambien es Box
+                    line += mapFun.Element.BoxInGoal.value
+                elif(obj.Point(ix,iy) == node.player_point):          # o y tambien es Player
+                    line += mapFun.Element.PlayerInGoal.value
+                elif(static_map[obj.Point(ix, iy)] == mapFun.Element.Wall):    # entonces es Wall?
+                    line += mapFun.Element.Wall.value
+                else: line += mapFun.Element.Goal.value         # bueno entonces es Goal
+            elif obj.Point(ix,iy) == node.player_point:               # no es Wall ni Goal pero es Player
+                line += mapFun.Element.Player.value
+            elif obj.Point(ix,iy) in node.boxes:                # no es Wall ni Goal ni Plater -> es Box?
+                line += mapFun.Element.Box.value            
+            else: line += mapFun.Element.Space.value            # entonces no hay nada
+
+        print(line)
+        line = ''
+    print('\n')
+
 # Read configurations from file
 with open("config.json") as file:
     data = json.load(file)

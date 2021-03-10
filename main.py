@@ -1,8 +1,31 @@
 import objects as obj
 import mapTraverse as mapFun
+import initMap as init
 import time
 import json
 import sys
+
+def printMap(node):
+    line = '\t     '
+    for iy in range(maxY):
+        for ix in range(maxX):
+            if(obj.Point(ix, iy) in static_map):                # el punto es Wall o Goal
+                if(obj.Point(ix, iy) in node.boxes):            # y tambien es Box
+                    line += mapFun.Element.BoxInGoal.value
+                elif(obj.Point(ix,iy) == node.player_point):          # o y tambien es Player
+                    line += mapFun.Element.PlayerInGoal.value
+                elif(static_map[obj.Point(ix, iy)] == mapFun.Element.Wall):    # entonces es Wall?
+                    line += mapFun.Element.Wall.value
+                else: line += mapFun.Element.Goal.value         # bueno entonces es Goal
+            elif obj.Point(ix,iy) == node.player_point:               # no es Wall ni Goal pero es Player
+                line += mapFun.Element.Player.value
+            elif obj.Point(ix,iy) in node.boxes:                # no es Wall ni Goal ni Plater -> es Box?
+                line += mapFun.Element.Box.value            
+            else: line += mapFun.Element.Space.value            # entonces no hay nada
+
+        print(line)
+        line = '\t     '
+    print('\n')
 
 start_time = time.time()
 
@@ -51,28 +74,6 @@ for line in file:
     y += 1
 maxY = y
 
-# print('\n\tMax X: ', maxX, '\tMax Y: ', maxY)
-
-line = ''
-for iy in range(maxY):
-    for ix in range(maxX):
-        if(obj.Point(ix, iy) in static_map):                # el punto es Wall o Goal
-            if(obj.Point(ix, iy) in boxes_init):            # y tambien es Box
-                line += mapFun.Element.BoxInGoal.value
-            elif(obj.Point(ix,iy) == player_init):          # o y tambien es Player
-                line += mapFun.Element.PlayerInGoal.value
-            elif(static_map[obj.Point(ix, iy)] == mapFun.Element.Wall):    # entonces es Wall?
-                line += mapFun.Element.Wall.value
-            else: line += mapFun.Element.Goal.value         # bueno entonces es Goal
-        elif obj.Point(ix,iy) == player_init:               # no es Wall ni Goal pero es Player
-            line += mapFun.Element.Player.value
-        elif obj.Point(ix,iy) in boxes_init:                # no es Wall ni Goal ni Plater -> es Box?
-            line += mapFun.Element.Box.value            
-        else: line += mapFun.Element.Space.value            # entonces no hay nada
-
-    print(line)
-    line = ''
-
 # TODO: Create simple map validation?
 #       No 2 player_init, # boxes <= # goals
 init_node = obj.Node(player_init, 0, boxes_init)
@@ -109,4 +110,7 @@ else:
 
     # TODO: Print map instead of nodes
     while road_stack:
-        print(f'{road_stack.pop()}\n')
+        printMap(road_stack.pop())
+
+
+
