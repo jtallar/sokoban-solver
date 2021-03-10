@@ -14,9 +14,15 @@ algorithm_name = data["algorithm"]
 if algorithm_name not in algo_dic_fun:
     print("Invalid algorithm!")
     sys.exit(1)
-max_depth = data["max_depth"]
+max_depth = int(data["max_depth"])
+if max_depth < 0:
+    print("Invalid max depth!")
+    sys.exit(1)
 if algorithm_name == 'IDDFS':
-    iddfs_step = data["iddfs_step"]
+    iddfs_step = int(data["iddfs_step"])
+    if iddfs_step <= 0:
+        print("Invalid IDDFS step!")
+        sys.exit(1)
 level = 'level_' + data["level"] + '.txt'
 # TODO: use parameters
 
