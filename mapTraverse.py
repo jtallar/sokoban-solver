@@ -15,8 +15,8 @@ class Element(enum.Enum):
 
 # General traversal algorithm
 class TraverseAlgorithm(object):
-    moveFunctionList = [obj.Point.movePointDown, obj.Point.movePointRight, 
-        obj.Point.movePointUp, obj.Point.movePointLeft]
+    moveFunctionList = [obj.Point.move_point_down, obj.Point.move_point_right,
+                        obj.Point.move_point_up, obj.Point.move_point_left]
 
     def __init__(self, staticMap, initNode):
         self.staticMap = staticMap
