@@ -1,5 +1,5 @@
 import objects as obj
-# import mapTraverse as mapFun
+import mapTraverse as mapFun
 import json
 
 # Read configurations from file
@@ -9,10 +9,9 @@ algorithm = data["algorithm"]
 depth = data["depth"]
 
 # Read map from file
-boxesInit = []
-goalsInit = []
-wallInit = []
-file = open("sample.txt", "r")
+boxes_init = []
+static_map = {}
+file = open("level_easy.txt", "r")
 y = 0
 for line in file:
     x = 0
@@ -21,18 +20,20 @@ for line in file:
             continue
         x += 1
         if character == '#':
-            wallInit.append(obj.Point(x, y))
-        elif character == '$':
-            boxesInit.append(obj.Point(x, y))
+            static_map[obj.Point(x, y)] = mapFun.Element.Wall
         elif character == '.':
-            goalsInit.append(obj.Point(x, y))
+            static_map[obj.Point(x, y)] = mapFun.Element.Goal
+        elif character == '$':
+            boxes_init.append(obj.Point(x, y))
         elif character == '@':
-            playerInit = obj.Point(x, y)
-        elif character == ' ':
-            continue
+            player_init = obj.Point(x, y)
         elif character == '*':
-            continue
+            static_map[obj.Point(x, y)] = mapFun.Element.Goal
+            boxes_init.append(obj.Point(x, y))
         elif character == '+':
+            static_map[obj.Point(x, y)] = mapFun.Element.Goal
+            player_init = obj.Point(x, y)
+        elif character == ' ':
             continue
     y += 1
 
