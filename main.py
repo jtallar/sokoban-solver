@@ -9,13 +9,14 @@ start_time = time.time()
 # Read configurations from file
 with open("config.json") as file:
     data = json.load(file)
-algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS}
-algorithm = data["algorithm"]
-if algorithm not in algo_dic_fun:
+algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS, 'IDDFS': mapFun.IDDFS}
+algorithm_name = data["algorithm"]
+if algorithm_name not in algo_dic_fun:
     print("Invalid algorithm!")
     sys.exit(1)
-
-depth = data["depth"]
+max_depth = data["max_depth"]
+if algorithm_name == 'IDDFS':
+    iddfs_step = data["iddfs_step"]
 level = 'level_' + data["level"] + '.txt'
 # TODO: use parameters
 
@@ -55,7 +56,10 @@ end_time = time.time()
 print(f'Took {end_time - start_time} to read Config and Map')
 start_time = end_time
 
-algo = algo_dic_fun[algorithm](static_map, init_node)
+if algorithm_name == 'IDDFS':
+    algo = algo_dic_fun[algorithm_name](static_map, init_node, iddfs_step)
+else:
+    algo = algo_dic_fun[algorithm_name](static_map, init_node)
 while not algo.is_algorithm_over():
     curr_node = algo.iterate()
     # print(f'{algo.node_collection}\n')
