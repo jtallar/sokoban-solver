@@ -178,5 +178,39 @@ class DFS(TraverseAlgorithm):
 
         return cur_node
 
+class IDDFS(TraverseAlgorithm):
+
+    def __init__(self, static_map, init_node, depth_step=float("inf")):
+        self.limit_nodes = []
+        self.depth_step = depth_step
+        self.cur_max_depth = depth_step
+        super().__init__(static_map, init_node)
+
+    # Iteration is based on a Stack collection
+    # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
+    def iterate(self):
+        """Do one iteration of IDDFS
+
+        Returns extracted node
+        """
+
+        if super().is_algorithm_over():
+            return self.winner_node
+
+        cur_node = self.node_collection.pop()
+        if not super().check_winner_node(cur_node):
+            if cur_node.depth < self.cur_max_depth:
+                self.node_collection.extend(super().expand_node(cur_node))
+            else:
+                self.limit_nodes.append(cur_node)
+
+            # When empty, try with limit_nodes and more depth
+            if not self.node_collection and self.limit_nodes:
+                self.node_collection = self.limit_nodes
+                self.limit_nodes = []
+                self.cur_max_depth += self.depth_step
+            
+
+        return cur_node
 
 

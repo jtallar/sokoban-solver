@@ -32,15 +32,22 @@ start_time = time.time()
 # Read configurations from file
 with open("config.json") as file:
     data = json.load(file)
-algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS}
-algorithm = data["algorithm"]
-if algorithm not in algo_dic_fun:
+algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS, 'IDDFS': mapFun.IDDFS}
+algorithm_name = data["algorithm"]
+if algorithm_name not in algo_dic_fun:
     print("Invalid algorithm!")
     sys.exit(1)
-
-depth = data["depth"]
+max_depth = int(data["max_depth"])
+if max_depth < 0:
+    print("Invalid max depth!")
+    sys.exit(1)
+if algorithm_name == 'IDDFS':
+    iddfs_step = int(data["iddfs_step"])
+    if iddfs_step <= 0:
+        print("Invalid IDDFS step!")
+        sys.exit(1)
 level = 'level_' + data["level"] + '.txt'
-# TODO: use parameters
+# TODO: should we use max_depth?
 
 # Read map from file
 boxes_init = []
@@ -87,7 +94,10 @@ print('\tMax. Depth:\t', depth, '\n----------------------------------------')
 print(f'Load Configuration & Level Map \t\t ⏱  {round(end_time - start_time, 6)} seconds')
 start_time = end_time
 
-algo = algo_dic_fun[algorithm](static_map, init_node)
+if algorithm_name == 'IDDFS':
+    algo = algo_dic_fun[algorithm_name](static_map, init_node, iddfs_step)
+else:
+    algo = algo_dic_fun[algorithm_name](static_map, init_node)
 while not algo.is_algorithm_over():
     curr_node = algo.iterate()
     # print(f'{algo.node_collection}\n')

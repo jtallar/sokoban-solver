@@ -1,5 +1,6 @@
 {
 	"level": "medium",
 	"algorithm": "BFS",
-	"depth": 30
+	"max_depth": 8,
+	"iddfs_step": 1
 }
