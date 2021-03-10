@@ -1,5 +1,6 @@
 {
 	"level": "medium",
 	"algorithm": "DFS",
-	"depth": 8
+	"max_depth": 8,
+	"iddfs_step": 1
 }
