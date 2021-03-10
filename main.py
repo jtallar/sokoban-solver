@@ -84,7 +84,7 @@ end_time = time.time()
 print('---------------------------------------- \nSearch parameters', '\n\tAlgorithm:\t', algorithm)
 print('\tMax. Depth:\t', depth, '\n----------------------------------------')
 
-print(f'Load Configuration & Level Map \t\t 🕓 {round(end_time - start_time, 6)} seconds')
+print(f'Load Configuration & Level Map \t\t ⏱  {round(end_time - start_time, 6)} seconds')
 start_time = end_time
 
 algo = algo_dic_fun[algorithm](static_map, init_node)
@@ -93,7 +93,7 @@ while not algo.is_algorithm_over():
     # print(f'{algo.node_collection}\n')
 
 end_time = time.time()
-print(f'Algorithm Run Completed \t\t 🕓 {round(end_time - start_time, 6)} seconds\n----------------------------------------\n')
+print(f'Algorithm Run Completed \t\t ⏱  {round(end_time - start_time, 6)} seconds\n----------------------------------------\n')
 
 # TODO: Move printing to function/other place, add return in failure instead of if/else
 if not algo.winner_node:
