@@ -17,8 +17,7 @@ for line in file:
     x = 0
     for character in line:
         if character == '\n':
-            continue
-        x += 1
+            break
         if character == '#':
             static_map[obj.Point(x, y)] = mapFun.Element.Wall
         elif character == '.':
@@ -33,8 +32,8 @@ for line in file:
         elif character == '+':
             static_map[obj.Point(x, y)] = mapFun.Element.Goal
             player_init = obj.Point(x, y)
-        elif character == ' ':
-            continue
+        # elif character == ' ': do nothing
+        x += 1
     y += 1
 
 # Walls:                    #

@@ -6,7 +6,7 @@ import objects as obj
 # Eg:   for el in (Element):
 #           print(el.name + ' ' + el.value)
 class Element(enum.Enum):
-    Box = "\U0001F5C2"
+    Box = "\U0001F5C2 "
     BoxInGoal = "\U0001F5C3"
     Goal = "\U0001F3C1"
     Wall = "\U0001F5FB"

@@ -22,6 +22,8 @@ level = 'level_' + data["level"] + '.txt'
 # Read map from file
 boxes_init = []
 static_map = {}
+maxY = 0
+maxX = 0
 file = open(level, "r")
 y = 0
 for line in file:
@@ -45,7 +47,31 @@ for line in file:
             player_init = obj.Point(x, y)
         # elif character == ' ': do nothing
         x += 1
+    if x > maxX: maxX = x
     y += 1
+maxY = y
+
+# print('\n\tMax X: ', maxX, '\tMax Y: ', maxY)
+
+line = ''
+for iy in range(maxY):
+    for ix in range(maxX):
+        if(obj.Point(ix, iy) in static_map):                # el punto es Wall o Goal
+            if(obj.Point(ix, iy) in boxes_init):            # y tambien es Box
+                line += mapFun.Element.BoxInGoal.value
+            elif(obj.Point(ix,iy) == player_init):          # o y tambien es Player
+                line += mapFun.Element.PlayerInGoal.value
+            elif(static_map[obj.Point(ix, iy)] == mapFun.Element.Wall):    # entonces es Wall?
+                line += mapFun.Element.Wall.value
+            else: line += mapFun.Element.Goal.value         # bueno entonces es Goal
+        elif obj.Point(ix,iy) == player_init:               # no es Wall ni Goal pero es Player
+            line += mapFun.Element.Player.value
+        elif obj.Point(ix,iy) in boxes_init:                # no es Wall ni Goal ni Plater -> es Box?
+            line += mapFun.Element.Box.value            
+        else: line += mapFun.Element.Space.value            # entonces no hay nada
+
+    print(line)
+    line = ''
 
 # TODO: Create simple map validation?
 #       No 2 player_init, # boxes <= # goals

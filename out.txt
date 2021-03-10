@@ -1,0 +1,42 @@
+
+	Max X:  13 	Max Y:  7
+      🗻🗻🗻🗻🗻🗻🗻      
+🗻🗻🗻      🏁      🗻🗻🗻
+🗻      🗂              🗻
+🗻                      🗻
+🗻🗻🗻              🗻🗻🗻
+    🗻      🤠      🗻    
+    🗻🗻🗻🗻🗻🗻🗻🗻🗻    
+---------------------------------------- 
+Search parameters 
+	Algorithm:	 BFS
+	Max. Depth:	 30 
+----------------------------------------
+Load Configuration & Level Map 		 🕓 0.000648 seconds
+Algorithm Run Completed 		 🕓 0.005519 seconds
+----------------------------------------
+
+		   🎉  Winner!  🎉 
+
+Depth: 9	 Expanded nodes: 148	 Border nodes: 68
+
+Node(player=Point(6,5),depth=0,boxes={Point(4,2): True})
+
+Node(player=Point(6,4),depth=1,boxes={Point(4,2): True})
+
+Node(player=Point(6,3),depth=2,boxes={Point(4,2): True})
+
+Node(player=Point(5,3),depth=3,boxes={Point(4,2): True})
+
+Node(player=Point(4,3),depth=4,boxes={Point(4,2): True})
+
+Node(player=Point(4,2),depth=5,boxes={Point(4,1): True})
+
+Node(player=Point(3,2),depth=6,boxes={Point(4,1): True})
+
+Node(player=Point(3,1),depth=7,boxes={Point(4,1): True})
+
+Node(player=Point(4,1),depth=8,boxes={Point(5,1): True})
+
+Node(player=Point(5,1),depth=9,boxes={Point(6,1): True})
+
