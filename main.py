@@ -1,6 +1,5 @@
 import objects as obj
 import mapTraverse as mapFun
-import initMap as init
 import time
 import json
 import sys
@@ -88,8 +87,8 @@ init_node = obj.Node(player_init, 0, boxes_init)
 end_time = time.time()
 
 # Print search params
-print('---------------------------------------- \nSearch parameters', '\n\tAlgorithm:\t', algorithm)
-print('\tMax. Depth:\t', depth, '\n----------------------------------------')
+print('---------------------------------------- \nSearch parameters', '\n\tAlgorithm:\t', algorithm_name)
+print('\tMax. Depth:\t', max_depth, '\n----------------------------------------')
 
 print(f'Load Configuration & Level Map \t\t ⏱  {round(end_time - start_time, 6)} seconds')
 start_time = end_time
@@ -121,6 +120,7 @@ else:
     # TODO: Print map instead of nodes
     while road_stack:
         printMap(road_stack.pop())
+        time.sleep(0.2)
 
 
 
