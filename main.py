@@ -47,7 +47,12 @@ for line in file:
 init_node = obj.Node(player_init, 0, boxes_init)
 
 end_time = time.time()
-print(f'Took {end_time - start_time} to read Config and Map')
+
+# Print search params
+print('---------------------------------------- \nSearch parameters', '\n\tAlgorithm:\t', algorithm)
+print('\tMax. Depth:\t', depth, '\n----------------------------------------')
+
+print(f'Loading Configuration & Level Map \t 🕓 {end_time - start_time} seconds')
 start_time = end_time
 
 algo = mapFun.BFS(static_map, init_node)
@@ -56,20 +61,19 @@ while not algo.is_algorithm_over():
     # print(f'{algo.node_collection}\n')
 
 end_time = time.time()
-print(f'Took {end_time - start_time} to run algorithm')
-
-# TODO: Print search params
+print(f'Algorithm Run Completed \t\t 🕓 {end_time - start_time} seconds\n----------------------------------------\n')
 
 # TODO: Move printing to function/other place, add return in failure instead of if/else
 if not algo.winner_node:
     # Solution not found
-    print("Failure!")
+    print("Failure! No solution has been found.")
 else:
     # Solution found
-    print("Success!")
-    print(f'Depth: {algo.winner_node.depth}; '
-          f'Expanded nodes: {algo.expanded_count}; '
-          f'Border nodes: {algo.get_border_count()}')
+    print("\t\t   🎉  Winner!  🎉 ")
+    print(f'\nDepth: {algo.winner_node.depth}\t '
+          f'Expanded nodes: {algo.expanded_count}\t '
+          f'Border nodes: {algo.get_border_count()}\n')
+          # TODO --> costo de la solucion?
     road_stack = algo.get_winning_road_stack()
 
     # TODO: Print map instead of nodes

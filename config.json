@@ -1,5 +1,5 @@
 {
-	"level": "medium",
-	"algorithm": "DFS",
-	"depth": 8
+	"level": "easy",
+	"algorithm": "BFS",
+	"depth": 30
 }
