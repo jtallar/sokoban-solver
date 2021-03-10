@@ -2,13 +2,19 @@ import objects as obj
 import mapTraverse as mapFun
 import time
 import json
+import sys
 
 start_time = time.time()
 
 # Read configurations from file
 with open("config.json") as file:
     data = json.load(file)
+algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS}
 algorithm = data["algorithm"]
+if algorithm not in algo_dic_fun:
+    print("Invalid algorithm!")
+    sys.exit(1)
+
 depth = data["depth"]
 level = 'level_' + data["level"] + '.txt'
 # TODO: use parameters
@@ -22,8 +28,7 @@ for line in file:
     x = 0
     for character in line:
         if character == '\n':
-            continue
-        x += 1
+            break
         if character == '#':
             static_map[obj.Point(x, y)] = mapFun.Element.Wall
         elif character == '.':
@@ -38,8 +43,8 @@ for line in file:
         elif character == '+':
             static_map[obj.Point(x, y)] = mapFun.Element.Goal
             player_init = obj.Point(x, y)
-        elif character == ' ':
-            continue
+        # elif character == ' ': do nothing
+        x += 1
     y += 1
 
 # TODO: Create simple map validation?
@@ -50,7 +55,7 @@ end_time = time.time()
 print(f'Took {end_time - start_time} to read Config and Map')
 start_time = end_time
 
-algo = mapFun.BFS(static_map, init_node)
+algo = algo_dic_fun[algorithm](static_map, init_node)
 while not algo.is_algorithm_over():
     curr_node = algo.iterate()
     # print(f'{algo.node_collection}\n')
