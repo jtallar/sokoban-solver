@@ -155,3 +155,28 @@ class BFS(TraverseAlgorithm):
             self.node_collection.extend(super().expand_node(cur_node))
 
         return cur_node
+
+class DFS(TraverseAlgorithm):
+
+    def __init__(self, static_map, init_node):
+        super().__init__(static_map, init_node)
+
+    # Iteration is based on a Stack collection
+    # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
+    def iterate(self):
+        """Do one iteration of DFS
+
+        Returns extracted node
+        """
+
+        if super().is_algorithm_over():
+            return self.winner_node
+
+        cur_node = self.node_collection.pop()
+        if not super().check_winner_node(cur_node):
+            self.node_collection.extend(super().expand_node(cur_node))
+
+        return cur_node
+
+
+
