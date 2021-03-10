@@ -18,20 +18,22 @@ for line in file:
     x = 0
     for character in line:
         if character == '\n': continue
-        x+=1
+        x += 1
         if character == '#':
             wallInit.append(obj.Point(x, y))
         elif character == '$':
-            boxesInit.append(obj.Point(x,y))
+            boxesInit.append(obj.Point(x, y))
         elif character == '.':
-            goalsInit.append(obj.Point(x,y))
-        elif (character == '@'):
-            playerInit = obj.Point(x,y)
-        elif (character == ' '): continue
-        elif (character == '*'): continue
-        elif (character == '+'): continue
-    y+=1
-
+            goalsInit.append(obj.Point(x, y))
+        elif character == '@':
+            playerInit = obj.Point(x, y)
+        elif character == ' ':
+            continue
+        elif character == '*':
+            continue
+        elif character == '+':
+            continue
+    y += 1
 
 # Walls:                    #
 # Boxes:                    $
