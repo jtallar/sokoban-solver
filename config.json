@@ -1,5 +1,5 @@
 {
-	"level": "easy",
+	"level": "levels/level_easy.txt",
 	"algorithm": "BFS",
 	"max_depth": 1000000,
 	"iddfs_step": 1,

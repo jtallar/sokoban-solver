@@ -45,7 +45,7 @@ if algorithm_name == 'IDDFS':
     if iddfs_step <= 0:
         print("Invalid IDDFS step!")
         sys.exit(1)
-level = 'level_' + data["level"] + '.txt'
+level = data["level"]
 print_boolean = data["print"]
 if print:
     print_time = float(data["print_time"])
@@ -128,6 +128,7 @@ print(f'Algorithm Run Completed \t\t ⏱  {round(end_time - start_time, 6)} seco
 if not algo.winner_node:
     # Solution not found
     print("\t❌  Failure! No solution found with those params. ❌ ")
+    # TODO: Ver si hay que imprimir esta info en caso de falla.
     print(f'Expanded nodes: {algo.expanded_count}\t '
           f'Border nodes: {algo.get_border_count()}\n')
 else:
