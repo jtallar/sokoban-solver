@@ -46,6 +46,10 @@ if algorithm_name == 'IDDFS':
         print("Invalid IDDFS step!")
         sys.exit(1)
 level = 'level_' + data["level"] + '.txt'
+print_time = data["print_time"]
+if print_time < 0:
+    print("Invalid printing time!")
+    sys.exit(1)
 # TODO: should we use max_depth?
 
 # Read map from file
@@ -121,7 +125,7 @@ else:
     while road_stack:
         printMap(road_stack.pop())
         # TODO: Add sleep time to config
-        time.sleep(0.2)
+        time.sleep(print_time)
 
 
 
