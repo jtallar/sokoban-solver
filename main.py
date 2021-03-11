@@ -120,6 +120,7 @@ else:
     # TODO: Print map instead of nodes
     while road_stack:
         printMap(road_stack.pop())
+        # TODO: Add sleep time to config
         time.sleep(0.2)
 
 
