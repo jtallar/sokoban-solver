@@ -1,7 +1,7 @@
 {
 	"level": "easy",
 	"algorithm": "BFS",
-	"max_depth": 8,
+	"max_depth": 1000000,
 	"iddfs_step": 1,
 	"print": false,
 	"print_time": 0.2
