@@ -46,10 +46,12 @@ if algorithm_name == 'IDDFS':
         print("Invalid IDDFS step!")
         sys.exit(1)
 level = 'level_' + data["level"] + '.txt'
-print_time = data["print_time"]
-if print_time < 0:
-    print("Invalid printing time!")
-    sys.exit(1)
+print_boolean = data["print"]
+if print:
+    print_time = data["print_time"]
+    if print_time < 0:
+        print("Invalid printing time!")
+        sys.exit(1)
 # TODO: should we use max_depth?
 
 # Read map from file
@@ -121,11 +123,10 @@ else:
           # costo de la solucion se pone algo?
     road_stack = algo.get_winning_road_stack()
 
-    # TODO: Print map instead of nodes
-    while road_stack:
-        printMap(road_stack.pop())
-        # TODO: Add sleep time to config
-        time.sleep(print_time)
+    if print_boolean:
+        while road_stack:
+            printMap(road_stack.pop())
+            time.sleep(print_time)
 
 
 
