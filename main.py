@@ -104,10 +104,12 @@ init_node = obj.Node(player_init, 0, boxes_init)
 
 end_time = time.time()
 
-# TODO: Agregar los demas search params
 # Print search params
 print('---------------------------------------- \nSearch parameters', '\n\tAlgorithm:\t', algorithm_name)
-print('\tMax. Depth:\t', max_depth, '\n----------------------------------------')
+if algorithm_name == 'IDDFS':
+    print('\tIDDFS step:\t', iddfs_step)
+print('\tMax. Depth:\t', max_depth, '\n\tLevel:\t\t', level)
+print('----------------------------------------')
 
 print(f'Load Configuration & Level Map \t\t ⏱  {round(end_time - start_time, 6)} seconds')
 start_time = end_time
@@ -123,10 +125,11 @@ while not algo.is_algorithm_over():
 end_time = time.time()
 print(f'Algorithm Run Completed \t\t ⏱  {round(end_time - start_time, 6)} seconds\n----------------------------------------\n')
 
-# TODO: Imprimir las cosas que no son de solucion en caso de perder
 if not algo.winner_node:
     # Solution not found
-    print("Failure! No solution has been found.")
+    print("\t❌  Failure! No solution found with those params. ❌ ")
+    print(f'Expanded nodes: {algo.expanded_count}\t '
+          f'Border nodes: {algo.get_border_count()}\n')
 else:
     # Solution found
     print("\t\t   🎉  Winner!  🎉 ")
