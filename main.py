@@ -52,7 +52,6 @@ if print:
     if print_time < 0:
         print("Invalid printing time!")
         sys.exit(1)
-# TODO: should we use max_depth?
 
 # Read map from file
 boxes_init = []
@@ -105,6 +104,7 @@ init_node = obj.Node(player_init, 0, boxes_init)
 
 end_time = time.time()
 
+# TODO: Agregar los demas search params
 # Print search params
 print('---------------------------------------- \nSearch parameters', '\n\tAlgorithm:\t', algorithm_name)
 print('\tMax. Depth:\t', max_depth, '\n----------------------------------------')
@@ -113,9 +113,9 @@ print(f'Load Configuration & Level Map \t\t ⏱  {round(end_time - start_time, 6
 start_time = end_time
 
 if algorithm_name == 'IDDFS':
-    algo = algo_dic_fun[algorithm_name](static_map, init_node, iddfs_step)
+    algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth, iddfs_step)
 else:
-    algo = algo_dic_fun[algorithm_name](static_map, init_node)
+    algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth)
 while not algo.is_algorithm_over():
     curr_node = algo.iterate()
     # print(f'{algo.node_collection}\n')
@@ -123,6 +123,7 @@ while not algo.is_algorithm_over():
 end_time = time.time()
 print(f'Algorithm Run Completed \t\t ⏱  {round(end_time - start_time, 6)} seconds\n----------------------------------------\n')
 
+# TODO: Imprimir las cosas que no son de solucion en caso de perder
 if not algo.winner_node:
     # Solution not found
     print("Failure! No solution has been found.")

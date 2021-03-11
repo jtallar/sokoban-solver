@@ -20,9 +20,10 @@ class TraverseAlgorithm(object):
     moveFunctionList = [obj.Point.move_point_down, obj.Point.move_point_right,
                         obj.Point.move_point_up, obj.Point.move_point_left]
 
-    def __init__(self, static_map, init_node):
+    def __init__(self, static_map, init_node, max_depth):
         self.static_map = static_map
         self.node_collection = [init_node]
+        self.max_depth = max_depth
         self.expanded_count = 0
         self.winner_node = None
         self.old_nodes = {}
@@ -88,6 +89,10 @@ class TraverseAlgorithm(object):
 
     # Returns list of nodes obtained by expanding a node
     def expand_node(self, node):
+        # If max_depth reached, do not expand
+        if node.depth >= self.max_depth:
+            return []
+
         self.expanded_count += 1
 
         new_nodes = []
@@ -135,8 +140,8 @@ class TraverseAlgorithm(object):
 
 class BFS(TraverseAlgorithm):
 
-    def __init__(self, static_map, init_node):
-        super().__init__(static_map, init_node)
+    def __init__(self, static_map, init_node, max_depth):
+        super().__init__(static_map, init_node, max_depth)
 
     # Iteration is based on a Queue collection
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
@@ -157,8 +162,8 @@ class BFS(TraverseAlgorithm):
 
 class DFS(TraverseAlgorithm):
 
-    def __init__(self, static_map, init_node):
-        super().__init__(static_map, init_node)
+    def __init__(self, static_map, init_node, max_depth):
+        super().__init__(static_map, init_node, max_depth)
 
     # Iteration is based on a Stack collection
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
@@ -179,11 +184,11 @@ class DFS(TraverseAlgorithm):
 
 class IDDFS(TraverseAlgorithm):
 
-    def __init__(self, static_map, init_node, depth_step=float("inf")):
+    def __init__(self, static_map, init_node, max_depth, depth_step=float("inf")):
         self.limit_nodes = []
         self.depth_step = depth_step
         self.cur_max_depth = depth_step
-        super().__init__(static_map, init_node)
+        super().__init__(static_map, init_node, max_depth)
 
     # Iteration is based on a Stack collection
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
