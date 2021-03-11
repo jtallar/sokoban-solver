@@ -88,7 +88,6 @@ class TraverseAlgorithm(object):
 
     # Returns list of nodes obtained by expanding a node
     def expand_node(self, node):
-        # TODO: Check if this count goes here. Should only add when it has children?
         self.expanded_count += 1
 
         new_nodes = []

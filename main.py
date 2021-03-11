@@ -123,7 +123,6 @@ while not algo.is_algorithm_over():
 end_time = time.time()
 print(f'Algorithm Run Completed \t\t ⏱  {round(end_time - start_time, 6)} seconds\n----------------------------------------\n')
 
-# TODO: Move printing to function/other place, add return in failure instead of if/else
 if not algo.winner_node:
     # Solution not found
     print("Failure! No solution has been found.")
@@ -131,9 +130,9 @@ else:
     # Solution found
     print("\t\t   🎉  Winner!  🎉 ")
     print(f'\nDepth: {algo.winner_node.depth}\t '
+          f'Cost: {algo.winner_node.depth}\t '
           f'Expanded nodes: {algo.expanded_count}\t '
           f'Border nodes: {algo.get_border_count()}\n')
-          # costo de la solucion se pone algo?
     road_stack = algo.get_winning_road_stack()
 
     if print_boolean:
