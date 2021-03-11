@@ -48,7 +48,7 @@ if algorithm_name == 'IDDFS':
 level = 'level_' + data["level"] + '.txt'
 print_boolean = data["print"]
 if print:
-    print_time = data["print_time"]
+    print_time = float(data["print_time"])
     if print_time < 0:
         print("Invalid printing time!")
         sys.exit(1)
@@ -57,6 +57,8 @@ if print:
 # Read map from file
 boxes_init = []
 static_map = {}
+player_init = None
+goal_count = 0
 maxY = 0
 maxX = 0
 file = open(level, "r")
@@ -70,15 +72,24 @@ for line in file:
             static_map[obj.Point(x, y)] = mapFun.Element.Wall
         elif character == '.':
             static_map[obj.Point(x, y)] = mapFun.Element.Goal
+            goal_count += 1
         elif character == '$':
             boxes_init.append(obj.Point(x, y))
         elif character == '@':
+            if player_init:
+                print("Invalid map! Cannot have more than one initial player position.")
+                sys.exit(1)
             player_init = obj.Point(x, y)
         elif character == '*':
             static_map[obj.Point(x, y)] = mapFun.Element.Goal
+            goal_count += 1
             boxes_init.append(obj.Point(x, y))
         elif character == '+':
+            if player_init:
+                print("Invalid map! Cannot have more than one initial player position.")
+                sys.exit(1)
             static_map[obj.Point(x, y)] = mapFun.Element.Goal
+            goal_count += 1
             player_init = obj.Point(x, y)
         # elif character == ' ': do nothing
         x += 1
@@ -86,8 +97,10 @@ for line in file:
     y += 1
 maxY = y
 
-# TODO: Create simple map validation?
-#       No 2 player_init, # boxes <= # goals
+if goal_count != len(boxes_init):
+    print("Invalid map! Cannot have more goals than boxes.")
+    sys.exit(1)
+
 init_node = obj.Node(player_init, 0, boxes_init)
 
 end_time = time.time()
