@@ -26,6 +26,8 @@ def printMap(node):
         line = '\t     '
     print('\n')
 
+#TODO: Close files
+
 start_time = time.time()
 
 # Read configurations from file

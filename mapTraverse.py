@@ -54,6 +54,7 @@ class TraverseAlgorithm(object):
     def iterate(self):
         pass
 
+    # TODO: ver si lo puedo cambiar para que la clave sea el nodo con las cajas
     def mark_node_as_old(self, node):
         if node.player_point not in self.old_nodes:
             self.old_nodes[node.player_point] = {}
