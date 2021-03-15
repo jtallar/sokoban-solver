@@ -1,6 +1,6 @@
 import enum
 import objects as obj
-
+import heapq as hq
 
 # Possible elements in space
 # Eg:   for el in (Element):
@@ -138,7 +138,7 @@ class TraverseAlgorithm(object):
 
         return road
 
-
+# Breadth First Search
 class BFS(TraverseAlgorithm):
 
     def __init__(self, static_map, init_node, max_depth):
@@ -161,6 +161,7 @@ class BFS(TraverseAlgorithm):
 
         return cur_node
 
+# Depth First Search
 class DFS(TraverseAlgorithm):
 
     def __init__(self, static_map, init_node, max_depth):
@@ -183,6 +184,7 @@ class DFS(TraverseAlgorithm):
 
         return cur_node
 
+# Iterative Deepening Depth First Search
 class IDDFS(TraverseAlgorithm):
 
     def __init__(self, static_map, init_node, max_depth, depth_step=float("inf")):
@@ -218,4 +220,33 @@ class IDDFS(TraverseAlgorithm):
 
         return cur_node
 
+class InformedTraverseAlgorithm(TraverseAlgorithm):
+    def __init__(self, static_map, init_node, max_depth, heuristic_function):
+        super().__init__(static_map, init_node, max_depth)
+        self.heuristic_function = heuristic_function
+        self.goal_map = {k: v for k, v in static_map.items() if v == Element.Goal}
 
+# Global Greedy Search
+class GGS(InformedTraverseAlgorithm):
+    def __init__(self, static_map, init_node, max_depth, heuristic_function):
+        init_node = obj.HeuristicNode(init_node, heuristic_function(init_node))
+        super().__init__(static_map, init_node, max_depth, heuristic_function)
+
+    # Iteration is based on a Priority Queue collection
+    # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
+    def iterate(self):
+        """Do one iteration of Global Greedy Search
+
+        Returns extracted node
+        """
+
+        if super().is_algorithm_over():
+            return self.winner_node
+
+        cur_node = hq.heappop(self.node_collection)
+        if not super().check_winner_node(cur_node):
+            new_nodes = super().expand_node(cur_node)
+            for n in new_nodes:
+                hq.heappush(self.node_collection, obj.HeuristicNode(n, self.heuristic_function(n)))
+
+        return cur_node

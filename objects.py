@@ -103,8 +103,67 @@ class Node(object):
         for point in box_points_list:
             self.boxes[point] = True
 
+    def copy_node(self, node):
+        """Create a node based on another node.
+        References still exist!
+
+        Parameters
+        ----------
+        node : Node
+            Node object to copy
+        """
+        self.player_point = node.player_point
+        self.depth = node.depth
+        self.prev_node = node.prev_node
+        self.boxes = node.boxes
+
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
         return "Node(player=%s,depth=%s,boxes=%s)" % (self.player_point, self.depth, self.boxes)
+
+class HeuristicNode(Node):
+
+    # Create a Heuristic Node based on a Node and an estimated h(n)
+    def __init__(self, node, heuristic_distance):
+        """Create a node used for sokoban
+
+        Parameters
+        ----------
+        node : Node
+            Node to replicate and take as own (same references)
+        heuristic_function : int
+            Estimated distance from this node to finish
+        """
+        super().copy_node(node)
+        self.heuristic_distance = heuristic_distance
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return "HeuristicNode(h(n)=%s,%s)" % (self.heuristic_distance, super().__repr__())
+    
+    def __lt__(self, other):
+        if self.heuristic_distance == other.heuristic_distance:
+            return self.depth < other.depth
+        return self.heuristic_distance < other.heuristic_distance
+
+class AStarNode(HeuristicNode):
+    # Create a node
+    def __init__(self, player_point, depth, box_points_list, heuristic_distance, prev_node=None):
+        super().__init__(player_point, depth, box_points_list, heuristic_distance, prev_node)
+        self.f_sum = self.heuristic_distance + self.depth
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return "AStarNode(f(n)=%s,%s)" % (self.f_sum, super().__repr__())
+    
+    def __lt__(self, other):
+        if self.f_sum == other.f_sum:
+            return self.heuristic_distance < other.heuristic_distance
+        return self.f_sum < other.f_sum
+
