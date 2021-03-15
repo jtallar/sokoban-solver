@@ -1,6 +1,6 @@
 import enum
 import objects as obj
-
+import heapq as hq
 
 # Possible elements in space
 # Eg:   for el in (Element):
@@ -219,3 +219,27 @@ class IDDFS(TraverseAlgorithm):
         return cur_node
 
 
+class GlobalGreedySearch(TraverseAlgorithm):
+    def __init__(self, static_map, init_node, max_depth, heuristic_function):
+        init_node = obj.HeuristicNode(init_node, heuristic_function)
+        super().__init__(static_map, init_node, max_depth)
+        self.heuristic_function = heuristic_function
+
+    # Iteration is based on a Priority Queue collection
+    # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
+    def iterate(self):
+        """Do one iteration of Global Greedy Search
+
+        Returns extracted node
+        """
+
+        if super().is_algorithm_over():
+            return self.winner_node
+
+        cur_node = hq.heappop(self.node_collection)
+        if not super().check_winner_node(cur_node):
+            new_nodes = super().expand_node(cur_node)
+            for n in new_nodes:
+                hq.heappush(self.node_collection, obj.HeuristicNode(n, self.heuristic_function))
+
+        return cur_node
