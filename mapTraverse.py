@@ -221,21 +221,17 @@ class IDDFS(TraverseAlgorithm):
         return cur_node
 
 class InformedTraverseAlgorithm(TraverseAlgorithm):
-    def __init__(self, static_map, init_node, max_depth, heuristic_function):
+    def __init__(self, static_map, init_node, max_depth, heuristic_function, constructor):
+        init_node = constructor(init_node, heuristic_function(init_node))
         super().__init__(static_map, init_node, max_depth)
         self.heuristic_function = heuristic_function
         self.goal_map = {k: v for k, v in static_map.items() if v == Element.Goal}
-
-# Global Greedy Search
-class GGS(InformedTraverseAlgorithm):
-    def __init__(self, static_map, init_node, max_depth, heuristic_function):
-        init_node = obj.HeuristicNode(init_node, heuristic_function(init_node))
-        super().__init__(static_map, init_node, max_depth, heuristic_function)
+        self.constructor = constructor
 
     # Iteration is based on a Priority Queue collection
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
     def iterate(self):
-        """Do one iteration of Global Greedy Search
+        """Do one iteration of Informed Algorithm Method
 
         Returns extracted node
         """
@@ -245,8 +241,56 @@ class GGS(InformedTraverseAlgorithm):
 
         cur_node = hq.heappop(self.node_collection)
         if not super().check_winner_node(cur_node):
-            new_nodes = super().expand_node(cur_node)
-            for n in new_nodes:
-                hq.heappush(self.node_collection, obj.HeuristicNode(n, self.heuristic_function(n)))
+            new_base_nodes = super().expand_node(cur_node)
+            for base_node in new_base_nodes:
+                hq.heappush(self.node_collection, self.constructor(base_node, self.heuristic_function(base_node)))
+
+        return cur_node
+
+# Global Greedy Search
+class GGS(InformedTraverseAlgorithm):
+    def __init__(self, static_map, init_node, max_depth, heuristic_function):
+        super().__init__(static_map, init_node, max_depth, heuristic_function, obj.HeuristicNode)
+
+# A* (Star) Search
+class ASS(InformedTraverseAlgorithm):
+    def __init__(self, static_map, init_node, max_depth, heuristic_function):
+        super().__init__(static_map, init_node, max_depth, heuristic_function, obj.AStarNode)
+
+# Iterative Deepening A* (Star) Search
+# TODO: Check correct implementation (it is A*)
+class IDASS(InformedTraverseAlgorithm):
+
+    def __init__(self, static_map, init_node, max_depth, heuristic_function):
+        self.limit_nodes = []
+        self.cur_limit = heuristic_function(init_node)
+        super().__init__(static_map, init_node, max_depth, heuristic_function, obj.AStarNode)
+
+    # Iteration is based on a Priority Queue collection
+    # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
+    def iterate(self):
+        """Do one iteration of IDASS
+
+        Returns extracted node
+        """
+
+        if super().is_algorithm_over():
+            return self.winner_node
+
+        cur_node = hq.heappop(self.node_collection)
+        if not super().check_winner_node(cur_node):
+            if cur_node.f_sum <= self.cur_limit:
+                new_base_nodes = super().expand_node(cur_node)
+                for base_node in new_base_nodes:
+                    hq.heappush(self.node_collection, self.constructor(base_node, self.heuristic_function(base_node)))
+            else:
+                hq.heappush(self.limit_nodes, cur_node)
+
+            # When empty, try with limit_nodes and more depth
+            if not self.node_collection and self.limit_nodes:
+                self.node_collection = self.limit_nodes
+                self.limit_nodes = []
+                # heap[0] is the smallest element, take a peek
+                self.cur_limit = self.node_collection[0].f_sum         
 
         return cur_node
