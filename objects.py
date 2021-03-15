@@ -125,19 +125,19 @@ class Node(object):
 
 class HeuristicNode(Node):
 
-    # Create a Heuristic Node based on a Node and a function that calculates h(n)
-    def __init__(self, node, heuristic_function):
+    # Create a Heuristic Node based on a Node and an estimated h(n)
+    def __init__(self, node, heuristic_distance):
         """Create a node used for sokoban
 
         Parameters
         ----------
         node : Node
             Node to replicate and take as own (same references)
-        heuristic_function : function
-            Function to estimate distance from this node to finish
+        heuristic_function : int
+            Estimated distance from this node to finish
         """
         super().copy_node(node)
-        self.heuristic_distance = heuristic_function(node)
+        self.heuristic_distance = heuristic_distance
 
     def __str__(self):
         return self.__repr__()

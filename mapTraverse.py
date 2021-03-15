@@ -220,12 +220,17 @@ class IDDFS(TraverseAlgorithm):
 
         return cur_node
 
-# Global Greedy Search
-class GGS(TraverseAlgorithm):
+class InformedTraverseAlgorithm(TraverseAlgorithm):
     def __init__(self, static_map, init_node, max_depth, heuristic_function):
-        init_node = obj.HeuristicNode(init_node, heuristic_function)
         super().__init__(static_map, init_node, max_depth)
         self.heuristic_function = heuristic_function
+        self.goal_map = {k: v for k, v in static_map.items() if v == Element.Goal}
+
+# Global Greedy Search
+class GGS(InformedTraverseAlgorithm):
+    def __init__(self, static_map, init_node, max_depth, heuristic_function):
+        init_node = obj.HeuristicNode(init_node, heuristic_function(init_node))
+        super().__init__(static_map, init_node, max_depth, heuristic_function)
 
     # Iteration is based on a Priority Queue collection
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
@@ -242,6 +247,6 @@ class GGS(TraverseAlgorithm):
         if not super().check_winner_node(cur_node):
             new_nodes = super().expand_node(cur_node)
             for n in new_nodes:
-                hq.heappush(self.node_collection, obj.HeuristicNode(n, self.heuristic_function))
+                hq.heappush(self.node_collection, obj.HeuristicNode(n, self.heuristic_function(n)))
 
         return cur_node
