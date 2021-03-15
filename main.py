@@ -33,10 +33,11 @@ start_time = time.time()
 # Read configurations from file
 with open("config.json") as file:
     data = json.load(file)
-algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS, 'IDDFS': mapFun.IDDFS, 
-                'GGS': mapFun.GGS}
+algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS, 'IDDFS': mapFun.IDDFS} 
+inf_algo_dic_fun = {'GGS': mapFun.GGS, 'ASS': mapFun.ASS, 'IDASS': mapFun.IDASS}
+
 algorithm_name = data["algorithm"]
-if algorithm_name not in algo_dic_fun:
+if algorithm_name not in algo_dic_fun and algorithm_name not in inf_algo_dic_fun:
     print("Invalid algorithm!")
     sys.exit(1)
 max_depth = int(data["max_depth"])
@@ -123,9 +124,9 @@ def heuristic(node):
 
 if algorithm_name == 'IDDFS':
     algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth, iddfs_step)
-elif algorithm_name == 'GGS':
+elif algorithm_name in inf_algo_dic_fun:
     # TODO: Get heuristic function from file + config param
-    algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth, heuristic)
+    algo = inf_algo_dic_fun[algorithm_name](static_map, init_node, max_depth, heuristic)
 else:
     algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth)
 while not algo.is_algorithm_over():

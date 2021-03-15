@@ -151,9 +151,9 @@ class HeuristicNode(Node):
         return self.heuristic_distance < other.heuristic_distance
 
 class AStarNode(HeuristicNode):
-    # Create a node
-    def __init__(self, player_point, depth, box_points_list, heuristic_distance, prev_node=None):
-        super().__init__(player_point, depth, box_points_list, heuristic_distance, prev_node)
+    # Create an AStarNode based on a Node and an estimated h(n)
+    def __init__(self, node, heuristic_distance):
+        super().__init__(node, heuristic_distance)
         self.f_sum = self.heuristic_distance + self.depth
 
     def __str__(self):
