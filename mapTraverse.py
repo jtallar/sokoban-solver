@@ -138,7 +138,7 @@ class TraverseAlgorithm(object):
 
         return road
 
-
+# Breadth First Search
 class BFS(TraverseAlgorithm):
 
     def __init__(self, static_map, init_node, max_depth):
@@ -161,6 +161,7 @@ class BFS(TraverseAlgorithm):
 
         return cur_node
 
+# Depth First Search
 class DFS(TraverseAlgorithm):
 
     def __init__(self, static_map, init_node, max_depth):
@@ -183,6 +184,7 @@ class DFS(TraverseAlgorithm):
 
         return cur_node
 
+# Iterative Deepening Depth First Search
 class IDDFS(TraverseAlgorithm):
 
     def __init__(self, static_map, init_node, max_depth, depth_step=float("inf")):
@@ -218,8 +220,8 @@ class IDDFS(TraverseAlgorithm):
 
         return cur_node
 
-
-class GlobalGreedySearch(TraverseAlgorithm):
+# Global Greedy Search
+class GGS(TraverseAlgorithm):
     def __init__(self, static_map, init_node, max_depth, heuristic_function):
         init_node = obj.HeuristicNode(init_node, heuristic_function)
         super().__init__(static_map, init_node, max_depth)

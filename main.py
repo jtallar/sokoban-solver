@@ -33,7 +33,8 @@ start_time = time.time()
 # Read configurations from file
 with open("config.json") as file:
     data = json.load(file)
-algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS, 'IDDFS': mapFun.IDDFS}
+algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS, 'IDDFS': mapFun.IDDFS, 
+                'GGS': mapFun.GGS}
 algorithm_name = data["algorithm"]
 if algorithm_name not in algo_dic_fun:
     print("Invalid algorithm!")
@@ -116,8 +117,15 @@ print('----------------------------------------')
 print(f'Load Configuration & Level Map \t\t ⏱  {round(end_time - start_time, 6)} seconds')
 start_time = end_time
 
+# TODO: delete this method
+def heuristic(node):
+    return 78 - node.depth
+
 if algorithm_name == 'IDDFS':
     algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth, iddfs_step)
+elif algorithm_name == 'GGS':
+    # TODO: Get heuristic function from file + config param
+    algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth, heuristic)
 else:
     algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth)
 while not algo.is_algorithm_over():
