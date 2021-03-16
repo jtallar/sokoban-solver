@@ -36,6 +36,12 @@ with open("config.json") as file:
     data = json.load(file)
 algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS, 'IDDFS': mapFun.IDDFS} 
 inf_algo_dic_fun = {'GGS': mapFun.GGS, 'ASS': mapFun.ASS, 'IDASS': mapFun.IDASS}
+heu_fun = {1:heu.Heuristic.h1, 2:heu.Heuristic.h2, 3:heu.Heuristic.h3, 4:heu.Heuristic.h4}
+
+heuristic = data["heuristic"]
+if heuristic not in heu_fun:
+    print("Invalid heuristic number!")
+    sys.exit(1)
 
 algorithm_name = data["algorithm"]
 if algorithm_name not in algo_dic_fun and algorithm_name not in inf_algo_dic_fun:
@@ -119,15 +125,11 @@ print('----------------------------------------')
 print(f'Load Configuration & Level Map \t\t ⏱  {round(end_time - start_time, 6)} seconds')
 start_time = end_time
 
-# TODO: delete this method
-def heuristic(node):
-    return node.depth
-
 if algorithm_name == 'IDDFS':
     algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth, iddfs_step)
 elif algorithm_name in inf_algo_dic_fun:
     # TODO: Get heuristic function from file + config param
-    algo = inf_algo_dic_fun[algorithm_name](static_map, init_node, max_depth, heuristic)
+    algo = inf_algo_dic_fun[algorithm_name](static_map, init_node, max_depth, heu_fun[heuristic])
 else:
     algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth)
 while not algo.is_algorithm_over():
@@ -155,8 +157,8 @@ else:
     if print_boolean:
         while road_stack:
             node = road_stack.pop()
-            heu.Heuristic.h1(node, static_map)
             printMap(node)
+            print(node.heuristic_distance)
             time.sleep(print_time)
 
 

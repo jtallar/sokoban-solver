@@ -1,8 +1,9 @@
 {
-	"level": "levels/level_medium.txt",
-	"algorithm": "BFS",
+	"level": "levels/level_easy.txt",
+	"algorithm": "GGS",
 	"max_depth": 1000000,
 	"iddfs_step": 1,
 	"print": true,
-	"print_time": 0.2
+	"print_time": 0.2,
+	"heuristic": 1
 }
