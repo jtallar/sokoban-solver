@@ -119,6 +119,8 @@ file.close()
 print('---------------------------------------- \nSearch parameters', '\n\tAlgorithm:\t', algorithm_name)
 if algorithm_name == 'IDDFS':
     print('\tIDDFS step:\t', iddfs_step)
+elif algorithm_name in inf_algo_dic_fun:
+    print('\tHeuristic:\t', heuristic)
 print('\tMax. Depth:\t', max_depth, '\n\tLevel:\t\t', level)
 print('----------------------------------------')
 
