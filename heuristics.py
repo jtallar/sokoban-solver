@@ -40,6 +40,16 @@ class Heuristic:
     def h4(node, static_map, goal_map): 
         return Heuristic.h1(node, static_map, goal_map) + Heuristic.h3(node, static_map, goal_map)
 
+    @staticmethod
+    def h5(node, static_map, goal_map, distance_map):
+        manhattan = 0
+        for box_point in node.boxes.keys():
+            if node.boxes[box_point] and box_point not in goal_map:
+                dead = dead_move(box_point, static_map)
+                if dead > 0: return dead
+                manhattan += distance_map[box_point]
+        return manhattan
+
 def dead_move(point, static_map):
     right = obj.Point.move_point_right(point)
     left = obj.Point.move_point_left(point)
