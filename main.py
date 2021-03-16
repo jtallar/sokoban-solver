@@ -3,7 +3,6 @@ import mapTraverse as mapFun
 import time
 import json
 import sys
-import heuristics as heu
 
 def printMap(node):
     line = '\t     '
@@ -153,7 +152,7 @@ else:
           f'Expanded nodes: {algo.expanded_count}\t '
           f'Border nodes: {algo.get_border_count()}\n')
     road_stack = algo.get_winning_road_stack()
-    
+
     if print_boolean:
         while road_stack:
             node = road_stack.pop()
