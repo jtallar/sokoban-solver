@@ -265,8 +265,9 @@ class IDASS(InformedTraverseAlgorithm):
         self.limit_nodes = []
         super().__init__(static_map, init_node, max_depth, heuristic_function, obj.AStarNode)
         self.cur_limit = self.node_collection[0].f_sum
+        self.next_limit = float("inf")
 
-    # Iteration is based on a Priority Queue collection
+    # Iteration is based on a Stack collection (DFS iteration with f(n) limit)
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
     def iterate(self):
         """Do one iteration of IDASS
@@ -277,20 +278,22 @@ class IDASS(InformedTraverseAlgorithm):
         if super().is_algorithm_over():
             return self.winner_node
 
-        cur_node = hq.heappop(self.node_collection)
+        cur_node = self.node_collection.pop()
         if not super().check_winner_node(cur_node):
             if cur_node.f_sum <= self.cur_limit:
                 new_base_nodes = super().expand_node(cur_node)
                 for base_node in new_base_nodes:
-                    hq.heappush(self.node_collection, self.constructor(base_node, self.heuristic_function(base_node, self.static_map, self.goal_map)))
+                    self.node_collection.append(self.constructor(base_node, self.heuristic_function(base_node, self.static_map, self.goal_map)))
             else:
-                hq.heappush(self.limit_nodes, cur_node)
+                if cur_node.f_sum < self.next_limit:
+                    self.next_limit = cur_node.f_sum
+                self.limit_nodes.append(cur_node)
 
             # When empty, try with limit_nodes and more depth
             if not self.node_collection and self.limit_nodes:
                 self.node_collection = self.limit_nodes
                 self.limit_nodes = []
-                # heap[0] is the smallest element, take a peek
-                self.cur_limit = self.node_collection[0].f_sum         
+                self.cur_limit = self.next_limit
+                self.next_limit = float("inf")
 
         return cur_node
