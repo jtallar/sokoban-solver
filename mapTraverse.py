@@ -261,10 +261,10 @@ class ASS(InformedTraverseAlgorithm):
 # TODO: Check correct implementation (it is A*)
 class IDASS(InformedTraverseAlgorithm):
 
-    def __init__(self, static_map, init_node, max_depth, heuristic_function):           # TODO: que hace?
+    def __init__(self, static_map, init_node, max_depth, heuristic_function):
         self.limit_nodes = []
         super().__init__(static_map, init_node, max_depth, heuristic_function, obj.AStarNode)
-        self.cur_limit = heuristic_function(init_node, static_map, self.goal_map)
+        self.cur_limit = self.node_collection[0].f_sum
 
     # Iteration is based on a Priority Queue collection
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
