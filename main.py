@@ -4,6 +4,18 @@ import heuristics as heu
 import time
 import json
 import sys
+import signal
+
+# Define signal handler for Ctrl+C for ordered interrupt
+def signal_handler(sig, frame):
+    if algo and not algo.winner_node and start_time:
+        print(f'\nAlgorithm Run Interrupted \t\t ⏱  {round(time.time() - start_time, 6)} seconds\n----------------------------------------\n')
+        print("\t❌  Failure by Ctrl+C! No solution found with those params. ❌ ")
+        print(f'\nExpanded nodes: {algo.expanded_count}')
+    print('\nExiting by SIGINT...')
+    sys.exit(2)
+
+signal.signal(signal.SIGINT, signal_handler)
 
 def printMap(node):
     line = '\t     '
@@ -151,9 +163,9 @@ else:
           f'Cost: {algo.winner_node.depth}\t '
           f'Expanded nodes: {algo.expanded_count}\t '
           f'Border nodes: {algo.get_border_count()}\n')
-    road_stack = algo.get_winning_road_stack()
 
     if print_boolean:
+        road_stack = algo.get_winning_road_stack()
         while road_stack:
             node = road_stack.pop()
             printMap(node)
