@@ -1,6 +1,8 @@
 import mapTraverse as mt
 import objects as obj
 
+INF = 10000
+
 class Heuristic:
 
     @staticmethod
@@ -16,29 +18,37 @@ class Heuristic:
     @staticmethod
     def h2(node, static_map, goal_map):
         manhattan = 0
-        goal_map = {k: v for k, v in static_map.items() if v == mt.Element.Goal}
         for box_point in node.boxes.keys():
             if node.boxes[box_point] and box_point not in goal_map:
                 dead = dead_move(box_point, static_map)
                 if dead > 0: return dead
-                manhattan = distance(box_point, closest_goal(box_point, static_map))
+                manhattan = closest_goal(box_point, goal_map)
                 break
         return manhattan
 
     @staticmethod
     def h3(node, static_map, goal_map):
         manhattan = 0
-        goal_map = {k: v for k, v in static_map.items() if v == mt.Element.Goal}
         for box_point in node.boxes.keys():
             if node.boxes[box_point] and box_point not in goal_map:
                 dead = dead_move(box_point, static_map)
                 if dead > 0: return dead
-                manhattan += distance(box_point, closest_goal(box_point, static_map))
+                manhattan += closest_goal(box_point, goal_map)
         return manhattan
 
     @staticmethod
     def h4(node, static_map, goal_map): 
         return Heuristic.h1(node, static_map, goal_map) + Heuristic.h3(node, static_map, goal_map)
+
+    @staticmethod
+    def h5(node, static_map, goal_map, distance_map):
+        manhattan = 0
+        for box_point in node.boxes.keys():
+            if node.boxes[box_point] and box_point not in goal_map:
+                dead = dead_move(box_point, static_map)
+                if dead > 0: return dead
+                manhattan += distance_map[box_point]
+        return manhattan
 
 def dead_move(point, static_map):
     right = obj.Point.move_point_right(point)
@@ -46,7 +56,7 @@ def dead_move(point, static_map):
     up = obj.Point.move_point_up(point)
     down = obj.Point.move_point_down(point)
     if (is_wall(up, static_map) or is_wall(down, static_map)) and (is_wall(left, static_map) or is_wall(right, static_map)):
-        return 10000
+        return INF
     return 0
 
 def distance(point_a, point_b):
@@ -55,6 +65,10 @@ def distance(point_a, point_b):
 def is_wall(point, static_map):
     return point in static_map and static_map[point]==mt.Element.Wall
 
-def closest_goal(point, static_map):
-    return point
-
+def closest_goal(point, goal_map):
+    dist = INF
+    for goal in goal_map.keys():
+        aux = distance(point, goal)
+        if aux < dist:
+            dist = aux
+    return dist

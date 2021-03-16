@@ -77,6 +77,8 @@ if print:
 # Read map from file
 boxes_init = []
 static_map = {}
+goal_map = {}
+
 player_init = None
 goal_count = 0
 maxY = 0
@@ -92,6 +94,7 @@ for line in file:
             static_map[obj.Point(x, y)] = mapFun.Element.Wall
         elif character == '.':
             static_map[obj.Point(x, y)] = mapFun.Element.Goal
+            goal_map[obj.Point(x, y)] = True
             goal_count += 1
         elif character == '$':
             boxes_init.append(obj.Point(x, y))
@@ -122,6 +125,17 @@ if goal_count != len(boxes_init):
     sys.exit(1)
 
 init_node = obj.Node(player_init, 0, boxes_init)
+
+# map for Heuristic 5
+distance_map = {}          # Point -> Distance to closest Goal (0 if goal, no key if wall)
+for iy in range(maxY):
+    for ix in range(maxX):
+        point = obj.Point(ix,iy)
+        if point in goal_map:
+            distance_map[point] = 0
+        elif point not in static_map:
+            distance_map[point] = heu.closest_goal(point, goal_map)
+print(distance_map)
 
 end_time = time.time()
 
@@ -172,6 +186,3 @@ else:
             # TODO: Delete next line when finished testing
             print(node.heuristic_distance)
             time.sleep(print_time)
-
-
-
