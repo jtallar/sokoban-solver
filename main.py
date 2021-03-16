@@ -1,5 +1,6 @@
 import objects as obj
 import mapTraverse as mapFun
+import heuristics as heu
 import time
 import json
 import sys

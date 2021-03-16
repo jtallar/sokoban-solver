@@ -5,5 +5,5 @@
 	"iddfs_step": 1,
 	"print": true,
 	"print_time": 0.2,
-	"heuristic": 1
+	"heuristic": 4
 }
