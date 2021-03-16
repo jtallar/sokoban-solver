@@ -123,6 +123,21 @@ class Node(object):
     def __repr__(self):
         return "Node(player=%s,depth=%s,boxes=%s)" % (self.player_point, self.depth, self.boxes)
 
+    # Define hash and eq methods to allow key usage
+    def __hash__(self):
+        return hash(self.player_point) + 31 * hash(frozenset(self.boxes.items()))
+
+    def __eq__(self, other):
+        if self.player_point != other.player_point:
+            return False
+        for box_point in self.boxes:
+            if box_point not in other.boxes:
+                return False
+        return True
+
+    def __ne__(self, other):
+        return not (self == other)
+
 class HeuristicNode(Node):
 
     # Create a Heuristic Node based on a Node and an estimated h(n)

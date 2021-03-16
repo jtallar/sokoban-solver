@@ -27,7 +27,6 @@ class TraverseAlgorithm(object):
         self.expanded_count = 0
         self.winner_node = None
         self.old_nodes = {}
-        self.old_node_count = 0
         # Add initial node to old nodes. Node is old when seen, not when expanded!
         self.mark_node_as_old(init_node)
 
@@ -54,39 +53,11 @@ class TraverseAlgorithm(object):
     def iterate(self):
         pass
 
-    # TODO: ver si lo puedo cambiar para que la clave sea el nodo con las cajas
     def mark_node_as_old(self, node):
-        if node.player_point not in self.old_nodes:
-            self.old_nodes[node.player_point] = {}
-
-        for box in node.boxes:
-            if box not in self.old_nodes[node.player_point]:
-                self.old_nodes[node.player_point][box] = {}
-            self.old_nodes[node.player_point][box][self.old_node_count] = True
-
-        self.old_node_count += 1
+        self.old_nodes[node] = True
 
     def is_node_old(self, node):
-        if node.player_point not in self.old_nodes:
-            return False
-
-        (first, ids) = (True, [])
-        for box in node.boxes:
-            if box not in self.old_nodes[node.player_point]:
-                return False
-            if first:
-                first = False
-                ids = self.old_nodes[node.player_point][box].keys()
-            else:
-                new_ids = []
-                for _id in ids:
-                    if _id in self.old_nodes[node.player_point][box]:
-                        new_ids.append(_id)
-                ids = new_ids
-                if not ids:
-                    return False
-
-        return not not ids
+        return node in self.old_nodes
 
     # Returns list of nodes obtained by expanding a node
     def expand_node(self, node):
