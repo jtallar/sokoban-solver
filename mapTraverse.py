@@ -27,7 +27,6 @@ class TraverseAlgorithm(object):
         self.expanded_count = 0
         self.winner_node = None
         self.old_nodes = {}
-        self.old_node_count = 0
         # Add initial node to old nodes. Node is old when seen, not when expanded!
         self.mark_node_as_old(init_node)
 
@@ -54,39 +53,11 @@ class TraverseAlgorithm(object):
     def iterate(self):
         pass
 
-    # TODO: ver si lo puedo cambiar para que la clave sea el nodo con las cajas
     def mark_node_as_old(self, node):
-        if node.player_point not in self.old_nodes:
-            self.old_nodes[node.player_point] = {}
-
-        for box in node.boxes:
-            if box not in self.old_nodes[node.player_point]:
-                self.old_nodes[node.player_point][box] = {}
-            self.old_nodes[node.player_point][box][self.old_node_count] = True
-
-        self.old_node_count += 1
+        self.old_nodes[node] = True
 
     def is_node_old(self, node):
-        if node.player_point not in self.old_nodes:
-            return False
-
-        (first, ids) = (True, [])
-        for box in node.boxes:
-            if box not in self.old_nodes[node.player_point]:
-                return False
-            if first:
-                first = False
-                ids = self.old_nodes[node.player_point][box].keys()
-            else:
-                new_ids = []
-                for _id in ids:
-                    if _id in self.old_nodes[node.player_point][box]:
-                        new_ids.append(_id)
-                ids = new_ids
-                if not ids:
-                    return False
-
-        return not not ids
+        return node in self.old_nodes
 
     # Returns list of nodes obtained by expanding a node
     def expand_node(self, node):
@@ -258,15 +229,15 @@ class ASS(InformedTraverseAlgorithm):
         super().__init__(static_map, init_node, max_depth, heuristic_function, obj.AStarNode)
 
 # Iterative Deepening A* (Star) Search
-# TODO: Check correct implementation (it is A*)
 class IDASS(InformedTraverseAlgorithm):
 
-    def __init__(self, static_map, init_node, max_depth, heuristic_function):           # TODO: que hace?
+    def __init__(self, static_map, init_node, max_depth, heuristic_function):
         self.limit_nodes = []
         super().__init__(static_map, init_node, max_depth, heuristic_function, obj.AStarNode)
-        self.cur_limit = heuristic_function(init_node, static_map, self.goal_map)
+        self.cur_limit = self.node_collection[0].f_sum
+        self.next_limit = float("inf")
 
-    # Iteration is based on a Priority Queue collection
+    # Iteration is based on a Stack collection (DFS iteration with f(n) limit)
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
     def iterate(self):
         """Do one iteration of IDASS
@@ -277,20 +248,22 @@ class IDASS(InformedTraverseAlgorithm):
         if super().is_algorithm_over():
             return self.winner_node
 
-        cur_node = hq.heappop(self.node_collection)
+        cur_node = self.node_collection.pop()
         if not super().check_winner_node(cur_node):
             if cur_node.f_sum <= self.cur_limit:
                 new_base_nodes = super().expand_node(cur_node)
                 for base_node in new_base_nodes:
-                    hq.heappush(self.node_collection, self.constructor(base_node, self.heuristic_function(base_node, self.static_map, self.goal_map)))
+                    self.node_collection.append(self.constructor(base_node, self.heuristic_function(base_node, self.static_map, self.goal_map)))
             else:
-                hq.heappush(self.limit_nodes, cur_node)
+                if cur_node.f_sum < self.next_limit:
+                    self.next_limit = cur_node.f_sum
+                self.limit_nodes.append(cur_node)
 
             # When empty, try with limit_nodes and more depth
             if not self.node_collection and self.limit_nodes:
                 self.node_collection = self.limit_nodes
                 self.limit_nodes = []
-                # heap[0] is the smallest element, take a peek
-                self.cur_limit = self.node_collection[0].f_sum         
+                self.cur_limit = self.next_limit
+                self.next_limit = float("inf")
 
         return cur_node

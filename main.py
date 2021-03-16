@@ -4,6 +4,18 @@ import heuristics as heu
 import time
 import json
 import sys
+import signal
+
+# Define signal handler for Ctrl+C for ordered interrupt
+def signal_handler(sig, frame):
+    if algo and not algo.winner_node and start_time:
+        print(f'\nAlgorithm Run Interrupted \t\t ⏱  {round(time.time() - start_time, 6)} seconds\n----------------------------------------\n')
+        print("\t❌  Failure by Ctrl+C! No solution found with those params. ❌ ")
+        print(f'\nExpanded nodes: {algo.expanded_count}')
+    print('\nExiting by SIGINT...')
+    sys.exit(2)
+
+signal.signal(signal.SIGINT, signal_handler)
 
 def printMap(node):
     line = '\t     '
@@ -27,8 +39,6 @@ def printMap(node):
         line = '\t     '
     print('\n')
 
-#TODO: Close files
-
 start_time = time.time()
 
 # Read configurations from file
@@ -36,15 +46,15 @@ with open("config.json") as file:
     data = json.load(file)
 algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS, 'IDDFS': mapFun.IDDFS} 
 inf_algo_dic_fun = {'GGS': mapFun.GGS, 'ASS': mapFun.ASS, 'IDASS': mapFun.IDASS}
-heu_fun = {1:heu.Heuristic.h1, 2:heu.Heuristic.h2, 3:heu.Heuristic.h3, 4:heu.Heuristic.h4}
-
-heuristic = data["heuristic"]
-if heuristic not in heu_fun:
-    print("Invalid heuristic number!")
-    sys.exit(1)
+heu_fun_dic = {1: heu.Heuristic.h1, 2: heu.Heuristic.h2, 3: heu.Heuristic.h3, 4: heu.Heuristic.h4}
 
 algorithm_name = data["algorithm"]
-if algorithm_name not in algo_dic_fun and algorithm_name not in inf_algo_dic_fun:
+if algorithm_name in inf_algo_dic_fun:
+    heuristic = int(data["heuristic"])
+    if heuristic not in heu_fun_dic:
+        print("Invalid heuristic number!")
+        sys.exit(1)
+elif algorithm_name not in algo_dic_fun:
     print("Invalid algorithm!")
     sys.exit(1)
 max_depth = int(data["max_depth"])
@@ -129,10 +139,14 @@ print(distance_map)
 
 end_time = time.time()
 
+file.close()
+
 # Print search params
 print('---------------------------------------- \nSearch parameters', '\n\tAlgorithm:\t', algorithm_name)
 if algorithm_name == 'IDDFS':
     print('\tIDDFS step:\t', iddfs_step)
+elif algorithm_name in inf_algo_dic_fun:
+    print('\tHeuristic:\t', heuristic)
 print('\tMax. Depth:\t', max_depth, '\n\tLevel:\t\t', level)
 print('----------------------------------------')
 
@@ -142,8 +156,7 @@ start_time = end_time
 if algorithm_name == 'IDDFS':
     algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth, iddfs_step)
 elif algorithm_name in inf_algo_dic_fun:
-    # TODO: Get heuristic function from file + config param
-    algo = inf_algo_dic_fun[algorithm_name](static_map, init_node, max_depth, heu_fun[heuristic])
+    algo = inf_algo_dic_fun[algorithm_name](static_map, init_node, max_depth, heu_fun_dic[heuristic])
 else:
     algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth)
 while not algo.is_algorithm_over():
@@ -156,9 +169,7 @@ print(f'Algorithm Run Completed \t\t ⏱  {round(end_time - start_time, 6)} seco
 if not algo.winner_node:
     # Solution not found
     print("\t❌  Failure! No solution found with those params. ❌ ")
-    # TODO: Ver si hay que imprimir esta info en caso de falla.
-    print(f'Expanded nodes: {algo.expanded_count}\t '
-          f'Border nodes: {algo.get_border_count()}\n')
+    print(f'\nExpanded nodes: {algo.expanded_count}\n')
 else:
     # Solution found
     print("\t\t   🎉  Winner!  🎉 ")
@@ -166,11 +177,12 @@ else:
           f'Cost: {algo.winner_node.depth}\t '
           f'Expanded nodes: {algo.expanded_count}\t '
           f'Border nodes: {algo.get_border_count()}\n')
-    road_stack = algo.get_winning_road_stack()
 
     if print_boolean:
+        road_stack = algo.get_winning_road_stack()
         while road_stack:
             node = road_stack.pop()
             printMap(node)
-            print(node.heuristic_distance)      # TODO: Delete line
+            # TODO: Delete next line when finished testing
+            print(node.heuristic_distance)
             time.sleep(print_time)
