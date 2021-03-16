@@ -258,7 +258,6 @@ class ASS(InformedTraverseAlgorithm):
         super().__init__(static_map, init_node, max_depth, heuristic_function, obj.AStarNode)
 
 # Iterative Deepening A* (Star) Search
-# TODO: Check correct implementation (it is A*)
 class IDASS(InformedTraverseAlgorithm):
 
     def __init__(self, static_map, init_node, max_depth, heuristic_function):
