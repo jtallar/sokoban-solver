@@ -222,10 +222,10 @@ class IDDFS(TraverseAlgorithm):
 
 class InformedTraverseAlgorithm(TraverseAlgorithm):
     def __init__(self, static_map, init_node, max_depth, heuristic_function, constructor):
-        init_node = constructor(init_node, heuristic_function(init_node))
+        self.goal_map = {k: v for k, v in static_map.items() if v == Element.Goal}
+        init_node = constructor(init_node, heuristic_function(init_node, static_map, self.goal_map))
         super().__init__(static_map, init_node, max_depth)
         self.heuristic_function = heuristic_function
-        self.goal_map = {k: v for k, v in static_map.items() if v == Element.Goal}
         self.constructor = constructor
 
     # Iteration is based on a Priority Queue collection
@@ -243,7 +243,7 @@ class InformedTraverseAlgorithm(TraverseAlgorithm):
         if not super().check_winner_node(cur_node):
             new_base_nodes = super().expand_node(cur_node)
             for base_node in new_base_nodes:
-                hq.heappush(self.node_collection, self.constructor(base_node, self.heuristic_function(base_node)))
+                hq.heappush(self.node_collection, self.constructor(base_node, self.heuristic_function(base_node, self.static_map, self.goal_map)))
 
         return cur_node
 
@@ -261,10 +261,10 @@ class ASS(InformedTraverseAlgorithm):
 # TODO: Check correct implementation (it is A*)
 class IDASS(InformedTraverseAlgorithm):
 
-    def __init__(self, static_map, init_node, max_depth, heuristic_function):
+    def __init__(self, static_map, init_node, max_depth, heuristic_function):           # TODO: que hace?
         self.limit_nodes = []
-        self.cur_limit = heuristic_function(init_node)
         super().__init__(static_map, init_node, max_depth, heuristic_function, obj.AStarNode)
+        self.cur_limit = heuristic_function(init_node, static_map, self.goal_map)
 
     # Iteration is based on a Priority Queue collection
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
@@ -282,7 +282,7 @@ class IDASS(InformedTraverseAlgorithm):
             if cur_node.f_sum <= self.cur_limit:
                 new_base_nodes = super().expand_node(cur_node)
                 for base_node in new_base_nodes:
-                    hq.heappush(self.node_collection, self.constructor(base_node, self.heuristic_function(base_node)))
+                    hq.heappush(self.node_collection, self.constructor(base_node, self.heuristic_function(base_node, self.static_map, self.goal_map)))
             else:
                 hq.heappush(self.limit_nodes, cur_node)
 
