@@ -47,8 +47,8 @@ with open("config.json") as file:
 algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS, 'IDDFS': mapFun.IDDFS} 
 inf_algo_dic_fun = {'GGS': mapFun.GGS, 'ASS': mapFun.ASS, 'IDASS': mapFun.IDASS}
 heu_fun_dic = {1: heu.PlayerToBoxesHeuristic, 2: heu.OneBoxToGoalHeuristic, 
-                3: heu.BoxesToGoalsHeuristic, 4: heu.PlayerToBoxesToGoalsHeuristic,
-                5: heu.BoxesToGoalsWithDistanceMapHeuristic}
+                3: heu.BoxesToGoalsHeuristic, 4: heu.BoxesToGoalsWithDistanceMapHeuristic,
+                5: heu.PlayerToBoxesToGoalsHeuristic}
 
 algorithm_name = data["algorithm"]
 if algorithm_name in inf_algo_dic_fun:
@@ -145,7 +145,7 @@ start_time = end_time
 if algorithm_name == 'IDDFS':
     algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth, iddfs_step)
 elif algorithm_name in inf_algo_dic_fun:
-    if heuristic == 5:
+    if heuristic >= 4:
         heu_object = heu_fun_dic[heuristic](static_map, goal_map, maxX, maxY)
     else:    
         heu_object = heu_fun_dic[heuristic](static_map, goal_map)

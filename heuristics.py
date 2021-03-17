@@ -79,20 +79,6 @@ class BoxesToGoalsHeuristic(Heuristic):
                 manhattan += self.closest_goal(box_point)
         return manhattan
 
-# Heuristic 4: Sum of Heuristic 1 and Heuristic 3
-# Time complexity: O(N) + O(N^2) = O(N^2), N: number of boxes
-class PlayerToBoxesToGoalsHeuristic(PlayerToBoxesHeuristic, BoxesToGoalsHeuristic):
-    def __init__(self, static_map, goal_map):
-        PlayerToBoxesHeuristic.__init__(self, static_map, goal_map)
-
-    def heu(self, node):
-        # We substract 1 because, if not, chosen box by Heuristic 1 is moved twice
-        value = PlayerToBoxesHeuristic.heu(self, node) + BoxesToGoalsHeuristic.heu(self, node) - 1
-        # If h1(n) = h3(n) = 0 --> return 0
-        if value < 0:
-            value = 0
-        return value
-
 class HeuristicWithDistanceMap(Heuristic):
     def __init__(self, static_map, goal_map, max_x, max_y):
         super().__init__(static_map, goal_map)
@@ -110,9 +96,9 @@ class HeuristicWithDistanceMap(Heuristic):
                     self.distance_map[point] = super().closest_goal(point)
 
 
-# Heuristic 5: Sum of manhattan distances with precalculated distance map 
-#              from each box to closest goal (can be repeated)
-# h5(n) = h3(n)
+# Heuristic 4: Sum of manhattan distances from each box to closest goal (can be repeated)
+#              with precalculated distance map
+# h4(n) = h3(n)
 # Time complexity: O(N), N: number of boxes
 class BoxesToGoalsWithDistanceMapHeuristic(HeuristicWithDistanceMap):
     def __init__(self, static_map, goal_map, max_x, max_y):
@@ -125,6 +111,20 @@ class BoxesToGoalsWithDistanceMapHeuristic(HeuristicWithDistanceMap):
                 if self.dead_point(box_point): return INF
                 manhattan += self.distance_map[box_point]
         return manhattan
+
+# Heuristic 5: Sum of Heuristic 1 and Heuristic 4
+# Time complexity: O(N) + O(N) = O(N), N: number of boxes
+class PlayerToBoxesToGoalsHeuristic(PlayerToBoxesHeuristic, BoxesToGoalsWithDistanceMapHeuristic):
+    def __init__(self, static_map, goal_map, max_x, max_y):
+        BoxesToGoalsWithDistanceMapHeuristic.__init__(self, static_map, goal_map, max_x, max_y)
+
+    def heu(self, node):
+        # We substract 1 because, if not, chosen box by Heuristic 1 is moved twice
+        value = PlayerToBoxesHeuristic.heu(self, node) + BoxesToGoalsWithDistanceMapHeuristic.heu(self, node) - 1
+        # If h1(n) = h4(n) = 0 --> return 0
+        if value < 0:
+            value = 0
+        return value
 
 # Tested Heuristic 2 with distance map - Not that much difference
 # class OneBoxToGoalWithDistanceMapHeuristic(HeuristicWithDistanceMap):
