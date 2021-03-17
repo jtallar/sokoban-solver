@@ -63,6 +63,10 @@ max_depth = int(data["max_depth"])
 if max_depth < 0:
     print("Invalid max depth!")
     sys.exit(1)
+max_expanded_nodes = int(data["max_expanded_nodes"])
+if max_expanded_nodes < 0:
+    print("Invalid max expanded nodes!")
+    sys.exit(1)
 if algorithm_name == 'IDDFS':
     iddfs_step = int(data["iddfs_step"])
     if iddfs_step <= 0:
@@ -136,22 +140,22 @@ if algorithm_name == 'IDDFS':
     print('\tIDDFS step:\t', iddfs_step)
 elif algorithm_name in inf_algo_dic_fun:
     print('\tHeuristic:\t', heuristic)
-print('\tMax. Depth:\t', max_depth, '\n\tLevel:\t\t', level)
+print('\tMax. Depth:\t', max_depth, '\n\tMax. Exp. Nodes:', max_expanded_nodes, '\n\tLevel:\t\t', level)
 print('----------------------------------------')
 
 print(f'Load Configuration & Level Map \t\t ⏱  {round(end_time - start_time, 6)} seconds')
 start_time = end_time
 
 if algorithm_name == 'IDDFS':
-    algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth, iddfs_step)
+    algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth, max_expanded_nodes, iddfs_step)
 elif algorithm_name in inf_algo_dic_fun:
     if heuristic >= 4:
         heu_object = heu_fun_dic[heuristic](static_map, goal_map, maxX, maxY)
     else:    
         heu_object = heu_fun_dic[heuristic](static_map, goal_map)
-    algo = inf_algo_dic_fun[algorithm_name](static_map, init_node, max_depth, heu_object)
+    algo = inf_algo_dic_fun[algorithm_name](static_map, init_node, max_depth, max_expanded_nodes, heu_object)
 else:
-    algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth)
+    algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth, max_expanded_nodes)
 while not algo.is_algorithm_over():
     curr_node = algo.iterate()
     # print(f'{algo.node_collection}\n')

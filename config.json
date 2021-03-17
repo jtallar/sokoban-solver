@@ -2,8 +2,9 @@
 	"level": "levels/level_medium.txt",
 	"algorithm": "GGS",
 	"max_depth": 1000000,
+	"max_expanded_nodes": 50000,
 	"iddfs_step": 1,
-	"print": true,
+	"print": false,
 	"print_time": 0.2,
 	"heuristic": 4
 }

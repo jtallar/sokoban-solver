@@ -20,10 +20,11 @@ class TraverseAlgorithm(object):
     moveFunctionList = [obj.Point.move_point_down, obj.Point.move_point_right,
                         obj.Point.move_point_up, obj.Point.move_point_left]
 
-    def __init__(self, static_map, init_node, max_depth):
+    def __init__(self, static_map, init_node, max_depth, max_expanded_nodes):
         self.static_map = static_map
         self.node_collection = [init_node]
         self.max_depth = max_depth
+        self.max_expanded_nodes = max_expanded_nodes
         self.expanded_count = 0
         self.winner_node = None
         self.old_nodes = {}
@@ -61,8 +62,8 @@ class TraverseAlgorithm(object):
 
     # Returns list of nodes obtained by expanding a node
     def expand_node(self, node):
-        # If max_depth reached, do not expand
-        if node.depth >= self.max_depth:
+        # If max_depth reached or max_expanded_nodes reached, do not expand
+        if node.depth >= self.max_depth or self.expanded_count >= self.max_expanded_nodes:
             return []
 
         self.expanded_count += 1
@@ -112,8 +113,8 @@ class TraverseAlgorithm(object):
 # Breadth First Search
 class BFS(TraverseAlgorithm):
 
-    def __init__(self, static_map, init_node, max_depth):
-        super().__init__(static_map, init_node, max_depth)
+    def __init__(self, static_map, init_node, max_depth, max_expanded_nodes):
+        super().__init__(static_map, init_node, max_depth, max_expanded_nodes)
 
     # Iteration is based on a Queue collection
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
@@ -135,8 +136,8 @@ class BFS(TraverseAlgorithm):
 # Depth First Search
 class DFS(TraverseAlgorithm):
 
-    def __init__(self, static_map, init_node, max_depth):
-        super().__init__(static_map, init_node, max_depth)
+    def __init__(self, static_map, init_node, max_depth, max_expanded_nodes):
+        super().__init__(static_map, init_node, max_depth, max_expanded_nodes)
 
     # Iteration is based on a Stack collection
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
@@ -158,11 +159,11 @@ class DFS(TraverseAlgorithm):
 # Iterative Deepening Depth First Search
 class IDDFS(TraverseAlgorithm):
 
-    def __init__(self, static_map, init_node, max_depth, depth_step=float("inf")):
+    def __init__(self, static_map, init_node, max_depth, max_expanded_nodes, depth_step=float("inf")):
         self.limit_nodes = []
         self.depth_step = depth_step
         self.cur_max_depth = depth_step
-        super().__init__(static_map, init_node, max_depth)
+        super().__init__(static_map, init_node, max_depth, max_expanded_nodes)
 
     # Iteration is based on a Stack collection
     # Should be used paired with algo.isAlgorithmOver() to avoid infinite loops
@@ -192,9 +193,9 @@ class IDDFS(TraverseAlgorithm):
         return cur_node
 
 class InformedTraverseAlgorithm(TraverseAlgorithm):
-    def __init__(self, static_map, init_node, max_depth, heuristic_instance, constructor):
+    def __init__(self, static_map, init_node, max_depth, max_expanded_nodes, heuristic_instance, constructor):
         init_node = constructor(init_node, heuristic_instance.heu(init_node))
-        super().__init__(static_map, init_node, max_depth)
+        super().__init__(static_map, init_node, max_depth, max_expanded_nodes)
         self.heuristic_instance = heuristic_instance
         self.constructor = constructor
 
@@ -219,20 +220,20 @@ class InformedTraverseAlgorithm(TraverseAlgorithm):
 
 # Global Greedy Search
 class GGS(InformedTraverseAlgorithm):
-    def __init__(self, static_map, init_node, max_depth, heuristic_instance):
-        super().__init__(static_map, init_node, max_depth, heuristic_instance, obj.HeuristicNode)
+    def __init__(self, static_map, init_node, max_depth, max_expanded_nodes, heuristic_instance):
+        super().__init__(static_map, init_node, max_depth, max_expanded_nodes, heuristic_instance, obj.HeuristicNode)
 
 # A* (Star) Search
 class ASS(InformedTraverseAlgorithm):
-    def __init__(self, static_map, init_node, max_depth, heuristic_instance):
-        super().__init__(static_map, init_node, max_depth, heuristic_instance, obj.AStarNode)
+    def __init__(self, static_map, init_node, max_depth, max_expanded_nodes, heuristic_instance):
+        super().__init__(static_map, init_node, max_depth, max_expanded_nodes, heuristic_instance, obj.AStarNode)
 
 # Iterative Deepening A* (Star) Search
 class IDASS(InformedTraverseAlgorithm):
 
-    def __init__(self, static_map, init_node, max_depth, heuristic_instance):
+    def __init__(self, static_map, init_node, max_depth, max_expanded_nodes, heuristic_instance):
         self.limit_nodes = []
-        super().__init__(static_map, init_node, max_depth, heuristic_instance, obj.AStarNode)
+        super().__init__(static_map, init_node, max_depth, max_expanded_nodes, heuristic_instance, obj.AStarNode)
         self.cur_limit = self.node_collection[0].f_sum
         self.next_limit = float("inf")
 
