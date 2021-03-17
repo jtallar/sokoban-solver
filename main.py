@@ -46,7 +46,9 @@ with open("config.json") as file:
     data = json.load(file)
 algo_dic_fun = {'BFS': mapFun.BFS, 'DFS': mapFun.DFS, 'IDDFS': mapFun.IDDFS} 
 inf_algo_dic_fun = {'GGS': mapFun.GGS, 'ASS': mapFun.ASS, 'IDASS': mapFun.IDASS}
-heu_fun_dic = {1: heu.Heuristic.h1, 2: heu.Heuristic.h2, 3: heu.Heuristic.h3, 4: heu.Heuristic.h4}
+heu_fun_dic = {1: heu.PlayerToBoxesHeuristic, 2: heu.OneBoxToGoalHeuristic, 
+                3: heu.BoxesToGoalsHeuristic, 4: heu.PlayerToBoxesToGoalsHeuristic,
+                5: heu.BoxesToGoalsWithDistanceMapHeuristic}
 
 algorithm_name = data["algorithm"]
 if algorithm_name in inf_algo_dic_fun:
@@ -124,17 +126,6 @@ if len(goal_map) != len(boxes_init):
 
 init_node = obj.Node(player_init, 0, boxes_init)
 
-# map for Heuristic 5
-distance_map = {}          # Point -> Distance to closest Goal (0 if goal, no key if wall)
-for iy in range(maxY):
-    for ix in range(maxX):
-        point = obj.Point(ix,iy)
-        if point in goal_map:
-            distance_map[point] = 0
-        elif point not in static_map:
-            distance_map[point] = heu.closest_goal(point, goal_map)
-print(distance_map)
-
 end_time = time.time()
 
 file.close()
@@ -154,7 +145,11 @@ start_time = end_time
 if algorithm_name == 'IDDFS':
     algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth, iddfs_step)
 elif algorithm_name in inf_algo_dic_fun:
-    algo = inf_algo_dic_fun[algorithm_name](static_map, init_node, max_depth, heu_fun_dic[heuristic])
+    if heuristic == 5:
+        heu_object = heu_fun_dic[heuristic](static_map, goal_map, maxX, maxY)
+    else:    
+        heu_object = heu_fun_dic[heuristic](static_map, goal_map)
+    algo = inf_algo_dic_fun[algorithm_name](static_map, init_node, max_depth, heu_object)
 else:
     algo = algo_dic_fun[algorithm_name](static_map, init_node, max_depth)
 while not algo.is_algorithm_over():
