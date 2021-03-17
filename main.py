@@ -80,7 +80,6 @@ static_map = {}
 goal_map = {}
 
 player_init = None
-goal_count = 0
 maxY = 0
 maxX = 0
 file = open(level, "r")
@@ -95,7 +94,6 @@ for line in file:
         elif character == '.':
             static_map[obj.Point(x, y)] = mapFun.Element.Goal
             goal_map[obj.Point(x, y)] = True
-            goal_count += 1
         elif character == '$':
             boxes_init.append(obj.Point(x, y))
         elif character == '@':
@@ -105,14 +103,14 @@ for line in file:
             player_init = obj.Point(x, y)
         elif character == '*':
             static_map[obj.Point(x, y)] = mapFun.Element.Goal
-            goal_count += 1
+            goal_map[obj.Point(x, y)] = True
             boxes_init.append(obj.Point(x, y))
         elif character == '+':
             if player_init:
                 print("Invalid map! Cannot have more than one initial player position.")
                 sys.exit(1)
             static_map[obj.Point(x, y)] = mapFun.Element.Goal
-            goal_count += 1
+            goal_map[obj.Point(x, y)] = True
             player_init = obj.Point(x, y)
         # elif character == ' ': do nothing
         x += 1
@@ -120,7 +118,7 @@ for line in file:
     y += 1
 maxY = y
 
-if goal_count != len(boxes_init):
+if len(goal_map) != len(boxes_init):
     print("Invalid map! Cannot have more goals than boxes.")
     sys.exit(1)
 
