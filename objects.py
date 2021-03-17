@@ -67,6 +67,9 @@ class Point(object):
             raise ValueError("Y cannot be higher than maxY!")
         return Point(point.x, point.y + 1)
 
+    def l1_distance(self, other):
+        return abs(self.x - other.x) + abs(self.y - other.y)
+
     # Define hash and eq methods to allow key usage
     def __hash__(self):
         return hash((self.x, self.y))

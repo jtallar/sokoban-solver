@@ -192,11 +192,10 @@ class IDDFS(TraverseAlgorithm):
         return cur_node
 
 class InformedTraverseAlgorithm(TraverseAlgorithm):
-    def __init__(self, static_map, init_node, max_depth, heuristic_function, constructor):
-        self.goal_map = {k: v for k, v in static_map.items() if v == Element.Goal}
-        init_node = constructor(init_node, heuristic_function(init_node, static_map, self.goal_map))
+    def __init__(self, static_map, init_node, max_depth, heuristic_instance, constructor):
+        init_node = constructor(init_node, heuristic_instance.heu(init_node))
         super().__init__(static_map, init_node, max_depth)
-        self.heuristic_function = heuristic_function
+        self.heuristic_instance = heuristic_instance
         self.constructor = constructor
 
     # Iteration is based on a Priority Queue collection
@@ -214,26 +213,26 @@ class InformedTraverseAlgorithm(TraverseAlgorithm):
         if not super().check_winner_node(cur_node):
             new_base_nodes = super().expand_node(cur_node)
             for base_node in new_base_nodes:
-                hq.heappush(self.node_collection, self.constructor(base_node, self.heuristic_function(base_node, self.static_map, self.goal_map)))
+                hq.heappush(self.node_collection, self.constructor(base_node, self.heuristic_instance.heu(base_node)))
 
         return cur_node
 
 # Global Greedy Search
 class GGS(InformedTraverseAlgorithm):
-    def __init__(self, static_map, init_node, max_depth, heuristic_function):
-        super().__init__(static_map, init_node, max_depth, heuristic_function, obj.HeuristicNode)
+    def __init__(self, static_map, init_node, max_depth, heuristic_instance):
+        super().__init__(static_map, init_node, max_depth, heuristic_instance, obj.HeuristicNode)
 
 # A* (Star) Search
 class ASS(InformedTraverseAlgorithm):
-    def __init__(self, static_map, init_node, max_depth, heuristic_function):
-        super().__init__(static_map, init_node, max_depth, heuristic_function, obj.AStarNode)
+    def __init__(self, static_map, init_node, max_depth, heuristic_instance):
+        super().__init__(static_map, init_node, max_depth, heuristic_instance, obj.AStarNode)
 
 # Iterative Deepening A* (Star) Search
 class IDASS(InformedTraverseAlgorithm):
 
-    def __init__(self, static_map, init_node, max_depth, heuristic_function):
+    def __init__(self, static_map, init_node, max_depth, heuristic_instance):
         self.limit_nodes = []
-        super().__init__(static_map, init_node, max_depth, heuristic_function, obj.AStarNode)
+        super().__init__(static_map, init_node, max_depth, heuristic_instance, obj.AStarNode)
         self.cur_limit = self.node_collection[0].f_sum
         self.next_limit = float("inf")
 
@@ -253,7 +252,7 @@ class IDASS(InformedTraverseAlgorithm):
             if cur_node.f_sum <= self.cur_limit:
                 new_base_nodes = super().expand_node(cur_node)
                 for base_node in new_base_nodes:
-                    self.node_collection.append(self.constructor(base_node, self.heuristic_function(base_node, self.static_map, self.goal_map)))
+                    self.node_collection.append(self.constructor(base_node, self.heuristic_instance.heu(base_node)))
             else:
                 if cur_node.f_sum < self.next_limit:
                     self.next_limit = cur_node.f_sum
