@@ -11,7 +11,7 @@ class Element(enum.Enum):
     Goal = "\U0001F3C1"
     Wall = "\U0001F9F1"
     Player = "\U0001F920"
-    PlayerInGoal = "\U0001F9D0"    # TODO: check emoji
+    PlayerInGoal = "\U0001F9D0"
     Space = "  "
 
 

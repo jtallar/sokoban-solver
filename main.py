@@ -180,6 +180,4 @@ else:
         while road_stack:
             node = road_stack.pop()
             printMap(node)
-            # TODO: Delete next line when finished testing
-            print(node.heuristic_distance)
             time.sleep(print_time)
