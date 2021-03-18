@@ -52,3 +52,7 @@ Todas las configuraciones de ejecución se establecen en el archivo `config.json
 	"print_time": 0.2,
 	"heuristic": 4
 }
+
+## Presentación
+Link a la presentación completa
+https://docs.google.com/presentation/d/101K4dIfjdomfYOhC5ezxS_zSoD9b9U4eDP1iNeP-s08/edit?usp=sharing
