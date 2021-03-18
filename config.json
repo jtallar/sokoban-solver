@@ -3,7 +3,7 @@
 	"algorithm": "GGS",
 	"max_depth": 1000000,
 	"max_expanded_nodes": 1000000,
-	"iddfs_step": 1,
+	"iddfs_step": 5,
 	"print": true,
 	"print_time": 0.2,
 	"heuristic": 4
